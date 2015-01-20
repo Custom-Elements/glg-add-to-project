@@ -1,7 +1,7 @@
 {
-  "name": "glg-add-to-consult",
+  "name": "glg-add-to-project",
   "version": "0.0.1",
-  "homepage": "https://github.com/Custom-Elements/glg-add-to-consult",
+  "homepage": "https://github.com/Custom-Elements/glg-add-to-project",
   "license": "MIT",
   "ignore": [
     "**/.*",

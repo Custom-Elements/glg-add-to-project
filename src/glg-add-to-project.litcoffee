@@ -1,11 +1,11 @@
-#glg-doit
+#glg-add-to-project
 An embeddable task list.
 
     _ = require 'lodash'
     rules = require './rules.litcoffee'
     epiquery2 = require 'epiquery2'
     hummingbird = require 'hummingbird'
-    Polymer 'glg-doit',
+    Polymer 'glg-add-to-project',
 
 ##Events
 

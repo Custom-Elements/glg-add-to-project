@@ -1,6 +1,7 @@
-# glg-add-to-consult
+# glg-add-to-project
 
-Polymer component that displays a modal dialog for adding an expert to a consultation selected by the user.
+Polymer component that displays a modal dialog for adding an expert to a
+project selected by the user.
 
 ## Developing
 
