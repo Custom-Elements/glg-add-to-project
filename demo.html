@@ -1,0 +1,36 @@
+<!doctype html>
+
+<html>
+  <head>
+    <title>glg-doit</title>
+    <script src="http://localhost:35729/livereload.js"></script>
+    <link rel="import" href="node_modules/polymer/polymer.html">
+    <link rel="import" href="src/glg-add-to-consult.html">
+    <style>
+      body {
+        font-family: "Helvetica Neue", "Helvetica", Arial;
+        font-size: 12px;
+      }
+      glg-doit {
+        position: absolute;
+        top: 1em;
+        left: 1em;
+        height: 90%;
+        width: 25em;
+      }
+
+    </style>
+  </head>
+  <body unresolved>
+    <glg-doit>
+    </glg-doit>
+    <script>
+      //this needs to be before polymer
+      window.debugUserName = 'glgroup\\squince';
+      document.addEventListener('polymer-ready', function() {
+        //poke your element here
+        //document.querySelector('glg-add-to-consult').testData();
+      })
+    </script>
+  </body>
+</html>

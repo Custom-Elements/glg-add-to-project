@@ -1,0 +1,44 @@
+@import "../node_modules/ui-styles/variables";
+@import "../node_modules/ui-styles/visual-elements";
+@import "../node_modules/ui-styles/typography";
+@import "../node_modules/ui-fonts/node_modules/ui-font-awesome/font-awesome-icons";
+
+:host {
+  display: block;
+  display: flex;
+  flex-direction: column;
+  #searchbar {
+    width: 100%;
+  }
+  #tasknavigation {
+    width: 100%;
+  }
+  #taskview {
+    flex: 1;
+    overflow: auto;
+    .border;
+    border-top: 0;
+  }
+  #searching {
+    .border;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+  #mainview {
+    .border;
+    border-top: 0;
+  }
+  glg-task {
+    .top-border;
+  }
+  glg-task:first-of-type {
+    border: 0;
+  }
+  ui-button{
+    icon{
+      padding-left: 1px;
+      padding-right: 1px;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "glg-add-to-consult",
+  "version": "0.0.1",
+  "dependencies": {
+    "bower": "^1.3.12",
+    "epiquery2": "git://github.com/wballard/epiquery2.git",
+    "glg-current-user": "git://github.com/custom-elements/glg-current-user#master",
+    "hummingbird": "git://github.com/glg/hummingbird.js#master",
+    "polymer": "git://github.com/custom-elements/polymer#master",
+    "polymer-serve": "git://github.com/custom-elements/polymer-serve#master",
+    "ui-attention": "git://github.com/custom-elements/ui-attention#master",
+    "ui-avatar": "git://github.com/custom-elements/ui-avatar#master",
+    "ui-button": "git://github.com/custom-elements/ui-button#master",
+    "ui-check": "git://github.com/custom-elements/ui-check#master",
+    "ui-fonts": "git://github.com/custom-elements/ui-fonts#master",
+    "ui-form": "git://github.com/custom-elements/ui-form#master",
+    "ui-input": "git://github.com/custom-elements/ui-input#master",
+    "ui-pages": "git://github.com/custom-elements/ui-pages#master",
+    "ui-preview": "git://github.com/custom-elements/ui-preview#master",
+    "ui-styles": "git://github.com/custom-elements/ui-styles#master",
+    "ui-typeahead": "git://github.com/custom-elements/ui-typeahead#master"
+  },
+  "license": "ISC",
+  "scripts": {
+    "test": "livereload ./ -p 35729; polymer-serve .",
+    "postinstall": "bower install"
+  }
+}

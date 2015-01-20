@@ -1,0 +1,16 @@
+{
+  "name": "glg-add-to-consult",
+  "version": "0.0.1",
+  "homepage": "https://github.com/Custom-Elements/glg-add-to-consult",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "core-list": "Polymer/core-list#~0.5.2"
+  }
+}

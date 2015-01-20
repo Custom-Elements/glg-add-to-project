@@ -1,0 +1,86 @@
+<link rel="import" href="../node_modules/ui-pages/src/ui-pages.html">
+<link rel="stylesheet" href="../node_modules/ui-fonts/node_modules/ui-font-awesome/font-awesome.less">
+<link rel="import" href="../node_modules/ui-tab/src/ui-tab.html">
+<link rel="import" href="../node_modules/ui-preview/src/ui-only-one-expanded.html">
+<link rel="import" href="../node_modules/glg-current-user/src/glg-current-user.html">
+<link rel="import" href="../node_modules/ui-button/src/ui-button.html">
+<link rel="import" href="../node_modules/ui-attention/src/ui-attention.html">
+<link rel="import" href="../bower_components/core-list/core-list.html">
+<link rel="import" href="./glg-task.html">
+<polymer-element name="glg-doit" attributes="taskview data username searchstring"
+  on-task="{{processTask}}"
+  on-task-delete="{{processTaskDelete}}">
+<template>
+  <link rel="stylesheet" type="text/css" href="./glg-doit.less">
+  <glg-current-user username="{{username}}"></glg-current-user>
+    <div>
+      <row id="searchbar" spaced>
+        <ui-input id="search" placeholder="Search tasks" borderless value="{{searchstring}}">
+          <icon search></icon>
+        </ui-input>
+        <ui-button minimal on-click="{{addTodo}}">
+          <ui-tooltip>
+            <span tip>Add a Todo</span>
+            <icon plus-square></icon>
+          </ui-tooltip>
+        </ui-button>
+      </row>
+    </div>
+    <div>
+      <template if="{{!searchstring}}">
+        <ui-tabs id="tasknavigation" value="{{taskview}}">
+          <ui-tab value="your">
+            <div>Your Tasks</div>
+            <ui-attention number>{{data.your.length | todoNumber}}</ui-attention>
+          </ui-tab>
+          <ui-tab value="delegated">
+            <div>Delegated</div>
+            <ui-attention number>{{data.delegated.length | todoNumber}}</ui-attention>
+          </ui-tab>
+          <ui-tab value="complete">
+            <div>Complete</div>
+            <ui-attention number>{{data.done.length | todoNumber}}</ui-attention>
+          </ui-tab>
+        </ui-tabs>
+      </template>
+      <template if="{{searchstring}}">
+         <div id="searching">
+         </div>
+      </template>
+    </div>
+    <ui-pages id="taskview" value="{{taskview}}" on-task-save="{{processTaskSave}}">
+      <ui-page value="search">
+        <template if="{{!data.search.length}}">
+          I didn't manage to find anything for you. <icon frown-o></icon>
+        </template>
+        <ui-only-one-expanded>
+          <template repeat="{{task in data.search}}">
+            <glg-task task="{{task}}" username="{{username}}"></glg-task>
+          </template>
+        </ui-only-one-expanded>
+      </ui-page>
+        <ui-page id="your" value="your">
+          <ui-only-one-expanded>
+            <template repeat="{{task in data.your}}">
+              <glg-task task="{{task}}" username="{{username}}"></glg-task>
+            </template>
+          </ui-only-one-expanded>
+        </ui-page>
+        <ui-page value="delegated">
+          <ui-only-one-expanded>
+            <template repeat="{{task in data.delegated}}">
+              <glg-task task="{{task}}" username="{{username}}"></glg-task>
+            </template>
+          </ui-only-one-expanded>
+        </ui-page>
+        <ui-page value="complete">
+          <ui-only-one-expanded>
+            <template repeat="{{task in data.done}}">
+              <glg-task task="{{task}}" username="{{username}}"></glg-task>
+            </template>
+          </ui-only-one-expanded>
+        </ui-page>
+    </ui-pages>
+</template>
+<script src="./glg-doit.litcoffee"></script>
+</polymer-element>
