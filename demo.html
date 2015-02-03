@@ -3,13 +3,14 @@
 <html>
   <head>
     <title>glg-add-to-project</title>
-    <script src="http://localhost:35729/livereload.js"></script>
-    <link rel="import" href="node_modules/polymer/polymer.html">
+    <script src="node_modules/webcomponents.js/webcomponents.js"></script>
+    <link rel="import" href="https://services.glgresearch.com/ui-toolkit/polymer.html">
+    <link rel="import" href="https://services.glgresearch.com/ui-toolkit/ui-toolkit.html">
     <link rel="import" href="src/glg-add-to-project.html">
     <style>
       body {
-        font-family: "Helvetica Neue", "Helvetica", Arial;
-        font-size: 12px;
+        font-family: "Helvetica Neue", "Helvetica", "Arial";
+        color: #454545;
       }
       glg-add-to-project {
         position: absolute;
@@ -18,19 +19,10 @@
         height: 90%;
         width: 25em;
       }
-
     </style>
   </head>
-  <body unresolved>
+  <body container unresolved>
     <glg-add-to-project>
     </glg-add-to-project>
-    <script>
-      //this needs to be before polymer
-      window.debugUserName = 'glgroup\\squince';
-      document.addEventListener('polymer-ready', function() {
-        //poke your element here
-        //document.querySelector('glg-add-to-project').testData();
-      })
-    </script>
   </body>
 </html>
