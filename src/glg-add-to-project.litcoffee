@@ -1,39 +1,32 @@
 # glg-add-to-project
-An embeddable task list.
+A dialog to allow one or more CMs to be added to a consult,
+survey, meeting, or event.
 
-    epiquery2 = require 'epiquery2'
     hummingbird = require 'hummingbird'
     Polymer 'glg-add-to-project',
-
-## Events
 
 ## Attributes and Change Handlers
 ### searchQuery
 What we are looking for now. This is data bound driven.
 
+### username
+Who am I? Once we know a user, kick off a query to get all your projects.
+
+### hb
+Hummingbird index of all user's recent projects.
+
+## Events
+### searchQueryChanged
+Get typeahead results for project names containing searchQuery.
+
       searchQueryChanged: ->
         @search()
 
-### projectview
-This is the name of the view currently selected.
+### rmPersonIdChanged
+Get the recent projects for this user and build hummingbird index.
 
-### username
-Who am I? Once we know a user, kick off a query to get all your tasks.
-
-      usernameChanged: ->
-        # TODO: this is where we define methods for persisting ATC to GLGLIVE database
-        @epiclient.query 'glglive_o', 'todo/list.mustache',
-          username: @username
-        @epiclient.query 'glglive_o', 'todo/doneList.mustache',
-          username: @username
-        clearInterval @updatePoll
-        @updatePoll = setInterval =>
-          if @next_baseline
-            @epiclient.query 'glglive_o', 'todo/listChanges.mustache',
-              username: @username
-              next_baseline: @next_baseline
-            , 'poll'
-        , 1000
+      rmPersonIdChanged: ->
+        @rmPersonId: personId
 
 ## Methods
 ### findProject
@@ -68,8 +61,6 @@ To the database with you!
         rules.validate project, @username
         @job project.guid, =>
           console.log 'save', expertId, projectId
-          @epiclient.query 'glglive_o', 'todo/addTask.mustache', expertId, projectId
-          @processTask undefined, expertId, projectId
 
 ###search
 Process a search, this will:
@@ -104,18 +95,6 @@ Hooking up to epistream. Each row coming back gets processed the same from
 the server as from the client.
 
       attached: ->
-        # TODO: is this where we'll attach to nectar?
-        @epiclient = new epiquery2.EpiClient([
-          "wss://nectar.glgroup.com/ws"
-          "wss://east.glgresearch.com/epistream-consultations-clustered/sockjs/websocket"
-          "wss://west.glgresearch.com/epistream-consultations-clustered/sockjs/websocket"
-          "wss://europe.glgresearch.com/epistream-consultations-clustered/sockjs/websocket"
-          "wss://asia.glgresearch.com/epistream-consultations-clustered/sockjs/websocket"
-          ]);
-        @epiclient.on 'row', (row) =>
-          @processTask undefined, row.columns
-        @epiclient.on 'error', ->
-          console.log arguments
 
       domReady: ->
 

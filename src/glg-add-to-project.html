@@ -1,14 +1,24 @@
-<link rel="stylesheet" href="../node_modules/ui-fonts/node_modules/ui-font-awesome/font-awesome.less">
 <link rel="import" href="../node_modules/glg-current-user/src/glg-current-user.html">
-<polymer-element name="glg-add-to-project" attributes="data username"
-  on-project="{{processProject}}"
-  on-project-delete="{{processProjectDelete}}">
+<link rel="import" href="../node_modules/glg-nectar/src/glg-nectar.html">
+<link rel="import" href="../node_modules/glg-current-user/src/glg-current-user.html">
+<polymer-element name="glg-add-to-project" attributes="results cmids appName rmPersonId hb"
+  on-project="{{addToProject}}"
+  >
   <template>
     <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less">
-    <glg-current-user username="{{username}}"></glg-current-user>
+    <glg-current-user id="atp-user" username="{{username}}"></glg-current-user>
+    <core-ajax
+      auto=true
+      id="myprojects"
+      method="GET"
+      url=""
+      handleAs="json"
+      withCredentials=true
+      on-core-response="{{myprojectsResponse}}">
+    </core-ajax>
     <div>
-      <h1>Add Expert to Project</h1>
-      <ui-input id="search" placeholder="Find consultation">
+      <h1>Add to Project</h1>
+      <ui-input id="search" placeholder="Find a project by name">
         <icon search></icon>
       </ui-input>
       <row id="searchbar" spaced>
@@ -16,4 +26,10 @@
     </div>
   </template>
   <script src="./glg-add-to-project.litcoffee"></script>
+  <script>
+    document.addEventListener('polymer-ready', function() {
+      var atp_user = document.querySelector('glg-current-user#atp-user');
+
+    });
+  </script>
 </polymer-element>

@@ -1,0 +1,16 @@
+{
+  "name": "glg-add-to-project",
+  "version": "0.1.0",
+  "homepage": "https://github.com/Custom-Elements/glg-add-to-project",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "core-ajax": "Polymer/core-ajax#~0.5.4"
+  }
+}

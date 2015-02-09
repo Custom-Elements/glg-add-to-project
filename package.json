@@ -4,24 +4,21 @@
   "dependencies": {
     "polymer-serve": "git://github.com/custom-elements/polymer-serve#master",
     "webcomponents": "git://github.com/custom-elements/webcomponentsjs#master",
-    "epiquery2": "git://github.com/wballard/epiquery2.git",
     "glg-current-user": "git://github.com/custom-elements/glg-current-user#master",
     "glg-nectar": "git://github.com/custom-elements/glg-nectar#master",
     "hummingbird": "git://github.com/glg/hummingbird.js#master",
-    "core-list": "git://github.com/custom-elements/core-list.git#master",
     "ui-attention": "git://github.com/custom-elements/ui-attention#master",
     "ui-button": "git://github.com/custom-elements/ui-button#master",
     "ui-check": "git://github.com/custom-elements/ui-check#master",
     "ui-fonts": "git://github.com/custom-elements/ui-fonts#master",
     "ui-form": "git://github.com/custom-elements/ui-form#master",
-    "ui-input": "git://github.com/custom-elements/ui-input#master",
     "ui-pages": "git://github.com/custom-elements/ui-pages#master",
-    "ui-preview": "git://github.com/custom-elements/ui-preview#master",
     "ui-styles": "git://github.com/custom-elements/ui-styles#master",
     "ui-typeahead": "git://github.com/custom-elements/ui-typeahead#master"
   },
   "license": "ISC",
   "scripts": {
+    "postinstall": "bower install",
     "test": "polymer-serve ./"
   }
 }

@@ -22,7 +22,27 @@
     </style>
   </head>
   <body container unresolved>
-    <glg-add-to-project>
+    <glg-add-to-project
+      id="atp"
+      cmids="3938"
+      appName="balrog"
+    >
     </glg-add-to-project>
   </body>
+  <script>
+    document.addEventListener('polymer-ready', function() {
+      // if window has cmids querystring parameter, replace
+      // glg-add-to-project attribute with its value
+      var atp = document.querySelector('glg-add-to-project');
+      var qs = location.search.slice(1).split('&');
+      var qparams = {};
+      qs.forEach(function(item){
+        var p = item.split('=')
+        qparams[p[0]] = p[1];
+      });
+      console.log(qparams);
+      atp.cmids = qparams['cmids'] ? qparams['cmids'] : [];
+      atp.appName = qparams['appName'] ? qparams['appName'] : "";
+    });
+  </script>
 </html>
