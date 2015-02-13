@@ -9,9 +9,6 @@ survey, meeting, or event.
 ### searchQuery
 What we are looking for now. This is data bound driven.
 
-### username
-Who am I? Once we know a user, kick off a query to get all your projects.
-
 ### hb
 Hummingbird index of all user's recent projects.
 
@@ -22,11 +19,6 @@ Get typeahead results for project names containing searchQuery.
       searchQueryChanged: ->
         @search()
 
-### rmPersonIdChanged
-Get the recent projects for this user and build hummingbird index.
-
-      rmPersonIdChanged: ->
-        @rmPersonId: personId
 
 ## Methods
 ### findProject
@@ -51,6 +43,24 @@ This has a one time event handler to put cursor focus in the 'Find consultation'
           @data.your.unshift
             who: @username
           @async focusOnBlankElement
+
+      # once epiquery returns with projects, build hummingbird index
+      myprojectsResponse: (data) ->
+        # build hb index from data
+        hb = new hummingbird()
+        hb.add project for project in data.detail.response
+
+      # trigger fetch of names of projects created in the last 90 days
+      # where this user was either primary or delegate RM or recruiter
+      getMyProjects: () ->
+        user = @shadowRoot.querySelector 'glg-current-user#atp-user'
+        projHandler = @shadowRoot.querySelector 'core-ajax#myprojects'
+        user.addEventListener 'user', (currentuser) ->
+          # lastUpdate must be seconds since epoch for sql server
+          lastUpdate = Math.floor((new Date(new Date() - 1000*60*60*24*90)).getTime()/(60*1000))*60
+          #projHandler.url = "http://mepiquery.glgroup.com/cache10m/nectar/glgliveMalory/getConsultsDelta.mustache?lastUpdate=#{lastUpdate}&personId=#{currentuser.detail.personId}"
+          projHandler.url = "http://mepiquery.glgroup.com/cache10m/nectar/glgliveMalory/getConsultsDelta.mustache?lastUpdate=#{lastUpdate}&personId=202654"
+
 
 ##Event Handlers
 
@@ -90,6 +100,13 @@ Process a search, this will:
       created: ->
 
       ready: ->
+        @getMyProjects()
+        template = @shadowRoot.querySelector 'template#projectMatches'
+        (@shadowRoot.querySelector 'ui-typeahead#projects').addEventListener 'inputchanged', (evt) ->
+          @hb.search evt.detail.value, (results) ->
+            template.model = results
+            Platform.performMicrotaskCheckpoint()
+
 
 Hooking up to epistream. Each row coming back gets processed the same from
 the server as from the client.

@@ -1,7 +1,6 @@
 <link rel="import" href="../node_modules/glg-current-user/src/glg-current-user.html">
 <link rel="import" href="../node_modules/glg-nectar/src/glg-nectar.html">
-<link rel="import" href="../node_modules/glg-current-user/src/glg-current-user.html">
-<polymer-element name="glg-add-to-project" attributes="results cmids appName rmPersonId hb"
+<polymer-element name="glg-add-to-project" attributes="results cmids appName hb projHandler"
   on-project="{{addToProject}}"
   >
   <template>
@@ -18,18 +17,18 @@
     </core-ajax>
     <div>
       <h1>Add to Project</h1>
-      <ui-input id="search" placeholder="Find a project by name">
+      <ui-typeahead
+          id="projects"
+          placeholder="Find a project by name..."
+          debounce="200">
         <icon search></icon>
-      </ui-input>
-      <row id="searchbar" spaced>
-      </row>
+        <template id="projectMatches" repeat="{{matches}}">
+          <ui-typeahead-item>
+            <span><strong>{{name}}</strong> [<i>{{createDate}}</i>]</span>
+          </ui-typeahead-item>
+        </template>
+      </ui-typeahead>
     </div>
   </template>
   <script src="./glg-add-to-project.litcoffee"></script>
-  <script>
-    document.addEventListener('polymer-ready', function() {
-      var atp_user = document.querySelector('glg-current-user#atp-user');
-
-    });
-  </script>
 </polymer-element>
