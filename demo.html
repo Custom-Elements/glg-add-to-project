@@ -41,7 +41,7 @@
         var p = item.split('=')
         qparams[p[0]] = p[1];
       });
-      console.log("query params: " + qparams);
+      console.log("query params: " + JSON.stringify(qparams));
       if (typeof qparams['cmids'] !== 'undefined') {
         atp.cmids = qparams['cmids'];
       }

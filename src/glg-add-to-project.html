@@ -18,6 +18,10 @@
     <div>
       <h1>Add to Project</h1>
       <div id="spinner" class="progress"><div>Loading…</div></div>
+      <div id="projowner" class="glg-hidden">
+        <input type="radio" name="projOwner" value="mine" checked> mine </input>
+        <input type="radio" name="projOwner" value="all"> all</input>
+      </div>
       <ui-typeahead
           id="projects"
           class="glg-hidden"

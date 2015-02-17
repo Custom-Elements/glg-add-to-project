@@ -27,11 +27,14 @@ Builds a hummingbird index with the list of projects returned by core-ajax call 
         # build hb index from data
         @hb = new hummingbird()
         @hb.add project for project in data.detail.response
+        #TODO: persist hummingbird index to local storage for faster subsequent loads
         @attachResultListener @hb
-        console.log "hummingbird ready: #{Object.keys(@hb.metaStore.root).length} projects"
         @$.spinner.removeAttribute 'class'
         @$.spinner.setAttribute 'hidden', true
+        @$.projowner.removeAttribute 'class'
         @$.projects.removeAttribute 'class'
+        @$.projects.focus()
+        console.log "hummingbird ready: #{Object.keys(@hb.metaStore.root).length} projects"
 
 ### getMyProjects
 Fetch of names of projects created in the last 90 days
