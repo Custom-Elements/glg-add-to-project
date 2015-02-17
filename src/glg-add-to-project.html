@@ -1,6 +1,6 @@
 <link rel="import" href="../node_modules/glg-current-user/src/glg-current-user.html">
 <link rel="import" href="../node_modules/glg-nectar/src/glg-nectar.html">
-<polymer-element name="glg-add-to-project" attributes="cmids appName"
+<polymer-element name="glg-add-to-project" attributes="cmids appName rmPersonId"
   on-project="{{addToProject}}"
   >
   <template>
@@ -19,14 +19,15 @@
       <h1>Add to Project</h1>
       <ui-typeahead
           id="projects"
+          class="glg-hidden"
           placeholder="Find a project by name..."
           debounce="50">
         <icon search></icon>
         <template id="projectMatches" repeat="{{matches}}">
           <ui-typeahead-item>
             <div>{{name}}<div>
-            <div style="font-size: 0.75rem!important;">
-              <span>{{createDate | date}}: </span>
+            <div style="margin-left: 1rem; font-size: 0.75rem!important;">
+              <span>{{createDate | date}} - </span>
               <span style="font-weight:bold;">{{firm}}</span>
             </div>
           </ui-typeahead-item>

@@ -22,17 +22,18 @@
     </style>
   </head>
   <body container unresolved>
+    <!-- hardcoded values for published attrs just for demo purposes -->
     <glg-add-to-project
       id="atp"
       cmids="3938"
       appName="balrog"
+      rmPersonId="881448"
     >
     </glg-add-to-project>
   </body>
   <script>
     document.addEventListener('polymer-ready', function() {
-      // if window has cmids querystring parameter, replace
-      // glg-add-to-project attribute with its value
+      // replace add-to-project attrs with values from querystring where available
       var atp = document.querySelector('glg-add-to-project');
       var qs = location.search.slice(1).split('&');
       var qparams = {};
@@ -40,9 +41,13 @@
         var p = item.split('=')
         qparams[p[0]] = p[1];
       });
-      console.log(qparams);
-      atp.cmids = qparams['cmids'] ? qparams['cmids'] : [];
-      atp.appName = qparams['appName'] ? qparams['appName'] : "";
+      console.log("query params: " + qparams);
+      if (typeof qparams['cmids'] !== 'undefined') {
+        atp.cmids = qparams['cmids'];
+      }
+      if (typeof qparams['appName'] !== 'undefined') {
+        atp.appName = qparams['appName'];
+      }
     });
   </script>
 </html>
