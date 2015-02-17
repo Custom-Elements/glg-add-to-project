@@ -5,7 +5,7 @@
   >
   <template>
     <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less">
-    <glg-current-user id="atp-user" username="{{username}}"></glg-current-user>
+    <glg-current-user id="atpuser" username="{{username}}"></glg-current-user>
     <core-ajax
       auto=true
       id="myprojects"
@@ -17,6 +17,7 @@
     </core-ajax>
     <div>
       <h1>Add to Project</h1>
+      <div id="spinner" class="progress"><div>Loading…</div></div>
       <ui-typeahead
           id="projects"
           class="glg-hidden"

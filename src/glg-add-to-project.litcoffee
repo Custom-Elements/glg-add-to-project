@@ -29,30 +29,29 @@ Builds a hummingbird index with the list of projects returned by core-ajax call 
         @hb.add project for project in data.detail.response
         @attachResultListener @hb
         console.log "hummingbird ready: #{Object.keys(@hb.metaStore.root).length} projects"
-        @shadowRoot.querySelector('ui-typeahead#projects').removeAttribute 'class'
+        @$.spinner.removeAttribute 'class'
+        @$.spinner.setAttribute 'hidden', true
+        @$.projects.removeAttribute 'class'
 
 ### getMyProjects
 Fetch of names of projects created in the last 90 days
 where this user was either primary or delegate RM or recruiter
 
       getMyProjects: () ->
-        user = @shadowRoot.querySelector 'glg-current-user#atp-user'
-        projHandler = @shadowRoot.querySelector 'core-ajax#myprojects'
+        myprojects = @$.myprojects
         rmPersonId = @rmPersonId
-        user.addEventListener 'user', (currentuser) ->
+        @$.atpuser.addEventListener 'user', (currentuser) ->
           # lastUpdate must be seconds since epoch for sql server
           lastUpdate = Math.floor((new Date(new Date() - 1000*60*60*24*90)).getTime()/(60*1000))*60
-          projHandler.url = "http://mepiquery.glgroup.com/cache10m/nectar/glgliveMalory/getConsultsDelta.mustache?lastUpdate=#{lastUpdate}&personId=#{rmPersonId ? currentuser.detail.personId}"
-          #markert 881448
-          #projHandler.url = "http://mepiquery.glgroup.com/cache10m/nectar/glgliveMalory/getConsultsDelta.mustache?lastUpdate=#{lastUpdate}&personId=881448"
-          console.log "projHandler.url set: #{projHandler.url}"
+          myprojects.url = "http://mepiquery.glgroup.com/cache10m/nectar/glgliveMalory/getConsultsDelta.mustache?lastUpdate=#{lastUpdate}&personId=#{rmPersonId ? currentuser.detail.personId}"
+          console.log "projHandler.url set: #{myprojects.url}"
 
 ### attachResultListener
 Attach listener for inputchange, so we can execute a hummingbird search
 
       attachResultListener: (hb) ->
-        template = @shadowRoot.querySelector 'template#projectMatches'
-        input = @shadowRoot.querySelector 'ui-typeahead#projects'
+        template = @$.projectMatches
+        input = @$.projects
         hbOpts =
           scoreThreshold: 0.5
           secondarySortField: 'createDate'
@@ -86,7 +85,7 @@ To the database with you!
         @hb = {}
 
       ready: ->
-        @shadowRoot.querySelector('ui-typeahead#projects').setAttribute 'unresolved', ''
+        @$.projects.setAttribute 'unresolved', ''
         @getMyProjects()
         console.log "cmids: #{@cmids}"
         console.log "appName: #{@appName}"
