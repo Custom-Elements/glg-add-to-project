@@ -11,6 +11,7 @@
     "tests"
   ],
   "dependencies": {
+    "polymer-filters": "Custom-Elements/polymer-filters#master",
     "core-ajax": "Polymer/core-ajax#~0.5.4"
   }
 }

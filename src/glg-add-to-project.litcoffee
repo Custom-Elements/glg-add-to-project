@@ -17,6 +17,7 @@ Builds a hummingbird index with the list of projects returned by core-ajax call 
         # build hb index from data
         @hb = new hummingbird()
         @hb.add project for project in data.detail.response
+        console.log "hummingbird ready"
         @attachResultListener @hb
 
 ### getMyProjects
@@ -30,7 +31,9 @@ where this user was either primary or delegate RM or recruiter
           # lastUpdate must be seconds since epoch for sql server
           lastUpdate = Math.floor((new Date(new Date() - 1000*60*60*24*90)).getTime()/(60*1000))*60
           #projHandler.url = "http://mepiquery.glgroup.com/cache10m/nectar/glgliveMalory/getConsultsDelta.mustache?lastUpdate=#{lastUpdate}&personId=#{currentuser.detail.personId}"
-          projHandler.url = "http://mepiquery.glgroup.com/cache10m/nectar/glgliveMalory/getConsultsDelta.mustache?lastUpdate=#{lastUpdate}&personId=202654"
+          #markert 881448
+          projHandler.url = "http://mepiquery.glgroup.com/cache10m/nectar/glgliveMalory/getConsultsDelta.mustache?lastUpdate=#{lastUpdate}&personId=881448"
+          console.log "projHandler.url set"
 
 ### attachResultListener
 Attach listener for inputchange, so we can execute a hummingbird search
@@ -38,11 +41,22 @@ Attach listener for inputchange, so we can execute a hummingbird search
       attachResultListener: (hb) ->
         template = @shadowRoot.querySelector 'template#projectMatches'
         input = @shadowRoot.querySelector 'ui-typeahead#projects'
+        hbOpts =
+          scoreThreshold: 0.5
+          secondarySortField: 'createDate'
+          secondarySortOrder: 'desc'
         input.addEventListener 'inputchange', (evt) ->
           hb.search evt.detail.value, (results) ->
-            template.model = results
+            template.model = {matches: results}
+            console.log "hb results processed"
             Platform.performMicrotaskCheckpoint()
+          , hbOpts
 
+### prettyDate
+Human readable formatted date string
+
+      prettyDate: (d) ->
+        d.toLocaleDateString()
 
 ## Event Handlers
 ### addToProject
