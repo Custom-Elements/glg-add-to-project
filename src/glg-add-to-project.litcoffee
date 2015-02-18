@@ -31,9 +31,10 @@ Builds a hummingbird index with the list of projects returned by core-ajax call 
         @attachResultListener @hb
         @$.spinner.removeAttribute 'class'
         @$.spinner.setAttribute 'hidden', true
-        @$.projowner.removeAttribute 'class'
-        @$.projects.removeAttribute 'class'
-        @$.projects.focus()
+        #@$.selectProjOwner.selected.setAttribute 'class', 'core-selected'
+        #@$.selectProjType.selected.setAttribute 'class', 'core-selected'
+        @$.inputwrapper.removeAttribute 'class'
+        @$.inputwrapper.focus()
         console.log "hummingbird ready: #{Object.keys(@hb.metaStore.root).length} projects"
 
 ### getMyProjects
@@ -88,7 +89,7 @@ To the database with you!
         @hb = {}
 
       ready: ->
-        @$.projects.setAttribute 'unresolved', ''
+        @$.inputwrapper.setAttribute 'unresolved', ''
         @getMyProjects()
         console.log "cmids: #{@cmids}"
         console.log "appName: #{@appName}"

@@ -34,7 +34,7 @@
     color: blue!important;
   }
 
-  #projowner {
+  #projowner, #projtype {
     font-size: 0.9em;
     margin: 0 0 0.5rem 1.75rem;
   }
@@ -64,11 +64,37 @@
   glg-task:first-of-type {
     border: 0;
   }
-  ui-button{
-    icon{
+  ui-button {
+    icon {
       padding-left: 1px;
       padding-right: 1px;
     }
+  }
+
+  ui-typeahead {
+    margin: 10px 0px;
+  }
+
+  .options > span {
+    margin: 5px 5px;
+    padding: 2px 2px;
+    cursor: pointer;
+  }
+
+  .options > *.core-selected {
+    border-color: lightgrey;
+    border-radius: 5px;
+    border-width: thin;
+    border-style: solid;
+    padding: 1px 5px;
+  }
+
+  #inputwrapper {
+    border-width: thin;
+    border-color: lightgrey;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px 5px;
   }
 
   @-webkit-keyframes spin {

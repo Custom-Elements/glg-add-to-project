@@ -12,6 +12,7 @@
   ],
   "dependencies": {
     "polymer-filters": "Custom-Elements/polymer-filters#master",
+    "core-selector": "Polymer/core-selector#~0.5.5",
     "core-ajax": "Polymer/core-ajax#~0.5.4"
   }
 }
