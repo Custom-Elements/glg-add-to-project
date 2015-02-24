@@ -3,7 +3,10 @@
 <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="../bower_components/core-selector/core-selector.html">
 <polymer-element name="glg-add-to-project" attributes="cmids appName rmPersonId"
-  on-project="{{addToProject}}"
+  on-core-select="{{filtersChanged}}"
+  on-inputchange="{{queryChanged}}"
+  on-user="{{getMyProjects}}"
+  on-results="{{displayNectarResults}}"
   >
   <template>
     <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less">
@@ -15,8 +18,19 @@
       url=""
       handleAs="json"
       withCredentials=true
-      on-core-response="{{myprojectsResponse}}">
+      on-core-response="{{buildHummingbirdIndex}}">
     </core-ajax>
+    <glg-nectar
+      id="nectar"
+      urls="wss://nectar.glgroup.com/ws"
+      entities='["consults"]'
+      options='{"interleave":true,
+          "scoreThreshold": 0.5,
+          "howMany": 5,
+          "secondarySortField": "createDate",
+          "secondarySortOrder": "desc"}'
+      >
+    </glg-nectar>
     <h1>Add to Project</h1>
     <div id="spinner" class="progress"><div>Loading…</div></div>
     <div id="inputwrapper" class="glg-hidden">
@@ -30,11 +44,9 @@
       <div id="projtype">
         <span class="selectHead">type:</span>
         <core-selector id="selectProjType" class="options" selected="0">
-          <span>any</span>
-          <span>consult</span>
-          <span>survey</span>
-          <span>meeting</span>
-          <span>event</span>
+          <span>consults</span>
+          <span>surveys</span>
+          <span>meetings</span>
         <core-selector>
       </div>
       <ui-typeahead

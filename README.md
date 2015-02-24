@@ -36,8 +36,9 @@ Currently, the primary use case is the ATC button on the new Advisor's page.
 * Use hummingbird to build index and display projects via typeahead.
   * done
 * Use glg-nectar to display projects from all users all time when user wants.
-  * in-progress
-* Use core-ajax to fetch compliance data for each project listed
+  * done
 * Use core-ajax to add CM to project via epiquery.
 * Use core-ajax within the callback of first core-ajax call to submit to the tracking service.
+* Use dbSockets to add to Mosaic Lists as an option under "project type" - which
+  should probably be renamed now. Stakeholder: Ariela Rosenberg
 

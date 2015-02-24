@@ -3,6 +3,10 @@ A dialog to allow one or more CMs to be added to a consult,
 survey, meeting, or event.
 
     hummingbird = require 'hummingbird'
+    hbOptions =
+      scoreThreshold: 0.5
+      secondarySortField: 'createDate'
+      secondarySortOrder: 'desc'
     Polymer 'glg-add-to-project',
 
 ## Attributes
@@ -16,91 +20,122 @@ The name to use to identify the application or feature used in ATC for tracking 
 The person ID of the RM taking the ATC action on these experts on this selected project
 
 ## Change Handlers
+### appNameChanged
+
+    appNameChanged: ->
+      #  @appName
+
+### cmidsChanged
+
+    cmidsChanged: ->
+      #  @cmids
+
+### rmPersonIdChanged
+
+    rmPersonIdChanged: ->
+      # @rmPersonId
+
+### filtersChanged
+
+    filtersChanged: (evt, detail, sender) ->
+      if sender is '' # and selection is 'anyone', else using hummingbird
+        @$.nectar.setAttribute 'entities', @$.selectProjType.selectedItem.innerText
+      #@search evt.detail.query
+      #@search @$.projects.value
+
+### queryChanged
+
+    queryChanged: (evt, detail, sender) ->
+      @search evt.detail.value
 
 ## Events
+### atp-started
+fired when an expert is about to be added to a project
+
+### atp-succeeded
+fired after an expert was successfully added to a project
+
+### atp-failed
+fired after failing to add an expert to a project
 
 ## Methods
-### myprojectsResponse
+### buildHummingbirdIndex
 Builds a hummingbird index with the list of projects returned by core-ajax call to epiquery
 
-      myprojectsResponse: (data) ->
-        # build hb index from data
-        @hb = new hummingbird()
-        @hb.add project for project in data.detail.response
-        #TODO: persist hummingbird index to local storage for faster subsequent loads
-        @attachResultListener @hb
-        @$.spinner.removeAttribute 'class'
-        @$.spinner.setAttribute 'hidden', true
-        #@$.selectProjOwner.selected.setAttribute 'class', 'core-selected'
-        #@$.selectProjType.selected.setAttribute 'class', 'core-selected'
-        @$.inputwrapper.removeAttribute 'class'
-        @$.inputwrapper.focus()
-        console.log "hummingbird ready: #{Object.keys(@hb.metaStore.root).length} projects"
+    buildHummingbirdIndex: (data) ->
+      # build hb index from data
+      #TODO: persist hummingbird index to local storage for faster subsequent loads
+      @hb = new hummingbird()
+      @hb.add project for project in data.detail.response
+      @$.spinner.removeAttribute 'class'
+      @$.spinner.setAttribute 'hidden', true
+      @$.inputwrapper.removeAttribute 'class'
+      @$.inputwrapper.focus()
+      console.log "hummingbird ready: #{Object.keys(@hb.metaStore.root).length} projects"
 
 ### getMyProjects
 Fetch of names of projects created in the last 90 days
 where this user was either primary or delegate RM or recruiter
 
-      getMyProjects: () ->
-        myprojects = @$.myprojects
-        rmPersonId = @rmPersonId
-        @$.atpuser.addEventListener 'user', (currentuser) ->
-          # lastUpdate must be seconds since epoch for sql server
-          lastUpdate = Math.floor((new Date(new Date() - 1000*60*60*24*90)).getTime()/(60*1000))*60
-          myprojects.url = "http://mepiquery.glgroup.com/cache10m/nectar/glgliveMalory/getConsultsDelta.mustache?lastUpdate=#{lastUpdate}&personId=#{rmPersonId ? currentuser.detail.personId}"
-          console.log "projHandler.url set: #{myprojects.url}"
+    getMyProjects: (currentuser) ->
+      # lastUpdate must be seconds since epoch for sql server
+      lastUpdate = Math.floor((new Date(new Date() - 1000*60*60*24*90)).getTime()/(60*1000))*60
+      # changing the URL triggers core-ajax fetch
+      @$.myprojects.url = "http://mepiquery.glgroup.com/cache10m/nectar/glgliveMalory/getConsultsDelta.mustache?lastUpdate=#{lastUpdate}&personId=#{@rmPersonId ? currentuser.detail.personId}"
+      console.log "projHandler.url set: #{@$.myprojects.url}"
 
-### attachResultListener
-Attach listener for inputchange, so we can execute a hummingbird search
+### displayResults
 
-      attachResultListener: (hb) ->
-        template = @$.projectMatches
-        input = @$.projects
-        hbOpts =
-          scoreThreshold: 0.5
-          secondarySortField: 'createDate'
-          secondarySortOrder: 'desc'
-        input.addEventListener 'inputchange', (evt) ->
-          hb.search evt.detail.value, (results) ->
-            template.model = {matches: results}
-            console.log "hb results processed: #{results.length}"
-            Platform.performMicrotaskCheckpoint()
-          , hbOpts
+    displayResults: (target) ->
+      (results) ->
+        target.$.projectMatches.model = {matches: results}
+        console.log "results processed: #{results.length}"
+
+### displayNectarResults
+
+    displayNectarResults: (evt) ->
+      console.log "stop here"
+      @displayResults(evt.target) evt.detail.results.matches
+
+### search
+Primary function for retrieving typeahead results from either hummingbird or nectar
+
+    #TODO: enable one or more indexes
+    search: (query) ->
+      #if @$.atp.querySelector('#selectProjOwner').selectedItem.innerText is 'mine'
+      if @$.selectProjOwner.selectedItem.innerText is 'mine'
+        if isNaN(query)
+          @hb.search query, @displayResults(@), hbOptions
+        else
+          @hb.jump query, @displayResults(@), hbOptions
+      else
+        if isNaN(query)
+          @$.nectar.query query
+        else
+          @$.nectar.jump query
 
 ### prettyDate
 Human readable formatted date string
 
-      prettyDate: (d) ->
-        d.toLocaleDateString()
-
-## Event Handlers
-### addToProject
-To the database with you!
-
-      addToProject: (evt, project) ->
-        rules.validate project, @username
-        @job project.guid, =>
-          console.log 'save', expertId, projectId
-
+    prettyDate: (d) ->
+      d.toLocaleDateString()
 
 ## Polymer Lifecycle
 
-      created: ->
-        @hb = {}
+    created: ->
 
-      ready: ->
-        @$.inputwrapper.setAttribute 'unresolved', ''
-        @getMyProjects()
-        console.log "cmids: #{@cmids}"
-        console.log "appName: #{@appName}"
-        console.log "rmPersonId: #{@rmPersonId}"
+    ready: ->
+      @$.inputwrapper.setAttribute 'unresolved', ''
+      console.log "cmids: #{@cmids}"
+      console.log "appName: #{@appName}"
+      console.log "rmPersonId: #{@rmPersonId}"
 
-      attached: ->
+    attached: ->
 
-      domReady: ->
+    domReady: ->
 
-      detached: ->
+    detached: ->
 
-      publish:
-        taskview:
-          reflect: true
+    publish:
+      taskview:
+        reflect: true
