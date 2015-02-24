@@ -4,7 +4,7 @@
 <link rel="import" href="../bower_components/core-selector/core-selector.html">
 <polymer-element name="glg-add-to-project" attributes="cmids appName rmPersonId"
   on-core-select="{{filtersChanged}}"
-  on-inputchange="{{queryChanged}}"
+  on-inputchange="{{queryUpdated}}"
   on-user="{{getMyProjects}}"
   on-results="{{displayNectarResults}}"
   >
@@ -31,35 +31,38 @@
           "secondarySortOrder": "desc"}'
       >
     </glg-nectar>
-    <h1>Add to Project</h1>
     <div id="spinner" class="progress"><div>Loading…</div></div>
     <div id="inputwrapper" class="glg-hidden">
       <div id="projowner">
-        <span class="selectHead">owner:</span>
-        <core-selector id="selectProjOwner" class="options" selected="0">
-          <span>mine</span>
-          <span>anyone</span>
-        <core-selector>
-      </div>
-      <div id="projtype">
-        <span class="selectHead">type:</span>
-        <core-selector id="selectProjType" class="options" selected="0">
-          <span>consults</span>
-          <span>surveys</span>
-          <span>meetings</span>
-        <core-selector>
+        <span>
+          <core-selector id="selectProjOwner" multi="false" class="options" selected="0">
+            <span>mine</span>
+            <span>anyone</span>
+          <core-selector>
+        </span>
+        <span style="font-size: 1rem; font-weight:bold; color:lightgrey;">|</span>
+        <span>
+          <core-selector id="selectProjType" multi="false" class="options" selected="0">
+            <span>consults</span>
+            <span>surveys</span>
+            <span>meetings</span>
+          <core-selector>
+        </span>
       </div>
       <ui-typeahead
           id="projects"
+          sticky
           placeholder="Find a project by name..."
           debounce="50">
         <icon search></icon>
         <template id="projectMatches" repeat="{{matches}}">
           <ui-typeahead-item>
-            <div>{{name}}<div>
-            <div style="margin-left: 1rem; font-size: 0.75rem!important;">
-              <span>{{createDate | date}} - </span>
-              <span style="font-weight:bold;">{{firm}}</span>
+            <div style="font-size: 1em; color: red;">
+              {{name}}
+              <div style="color: #454545; font-size: 0.9em; margin-left: 1em;">
+                <span>{{createDate | date}} - </span>
+                <span style="font-weight: 400;">{{firm}}</span>
+              </div>
             </div>
           </ui-typeahead-item>
         </template>

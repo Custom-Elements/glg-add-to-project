@@ -38,15 +38,16 @@ The person ID of the RM taking the ATC action on these experts on this selected 
 ### filtersChanged
 
     filtersChanged: (evt, detail, sender) ->
-      if sender is '' # and selection is 'anyone', else using hummingbird
-        @$.nectar.setAttribute 'entities', @$.selectProjType.selectedItem.innerText
-      #@search evt.detail.query
-      #@search @$.projects.value
+      # determine if we're changing the projOwner or projType
+      #if detail.isSelected and @nectar? and @hb?
+      #  @nectar.entities = "['#{detail.item.textContent}']" if detail.item.parentElement.id is 'selectProjType'
+        @search()
 
-### queryChanged
+### queryUpdated
 
-    queryChanged: (evt, detail, sender) ->
-      @search evt.detail.value
+    queryUpdated: (evt, detail, sender) ->
+      @query = evt.detail.value
+      @search()
 
 ## Events
 ### atp-started
@@ -101,18 +102,19 @@ where this user was either primary or delegate RM or recruiter
 Primary function for retrieving typeahead results from either hummingbird or nectar
 
     #TODO: enable one or more indexes
-    search: (query) ->
-      #if @$.atp.querySelector('#selectProjOwner').selectedItem.innerText is 'mine'
-      if @$.selectProjOwner.selectedItem.innerText is 'mine'
-        if isNaN(query)
-          @hb.search query, @displayResults(@), hbOptions
+    #TODO: create multiple hummingbird indexes: consults, meetings, surveys
+    search: () ->
+      if @query? and @$.selectProjOwner?.selectedItem? and @$.selectProjType?.selectedItem?
+        if @$.selectProjOwner.selectedItem.innerText is 'mine'
+          if isNaN(@query)
+            @hb.search @query, @displayResults(@), hbOptions
+          else
+            @hb.jump @query, @displayResults(@), hbOptions
         else
-          @hb.jump query, @displayResults(@), hbOptions
-      else
-        if isNaN(query)
-          @$.nectar.query query
-        else
-          @$.nectar.jump query
+          if isNaN(@query)
+            @$.nectar.query @query
+          else
+            @$.nectar.jump @query
 
 ### prettyDate
 Human readable formatted date string

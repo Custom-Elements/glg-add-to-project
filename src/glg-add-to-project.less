@@ -10,17 +10,15 @@
     margin: 0rem 0rem 0.5rem 0rem;
   }
 
-  display: block;
+  -webkit-flex-display: flex;
+  -moz-flex-display: flex;
+  -o-flex-display: flex;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 
   #searchbar {
     width: 100%;
-  }
-
-  #glg-projectname {
-    font-size: 0.75rem!important;
-    color: red!important;
   }
 
   .glg-hidden {
@@ -29,14 +27,9 @@
     overflow: hidden;
   }
 
-  #glg-projectmeta {
-    font-size: 0.5rem!important;
-    color: blue!important;
-  }
-
   #projowner, #projtype {
     font-size: 0.9em;
-    margin: 0 0 0.5rem 1.75rem;
+    margin: 0 0 0.5rem 1.5rem;
   }
 
   #tasknavigation {
@@ -76,17 +69,14 @@
   }
 
   .options > span {
-    margin: 5px 5px;
-    padding: 2px 2px;
+    margin: 0.5rem 0.5rem;
     cursor: pointer;
   }
 
   .options > *.core-selected {
-    border-color: lightgrey;
-    border-radius: 5px;
-    border-width: thin;
-    border-style: solid;
-    padding: 1px 5px;
+    border-bottom-color: lightgrey;
+    border-bottom-width: 0.2rem;
+    border-bottom-style: solid;
   }
 
   #inputwrapper {
