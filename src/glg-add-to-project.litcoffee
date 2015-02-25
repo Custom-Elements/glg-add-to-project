@@ -39,8 +39,8 @@ The person ID of the RM taking the ATC action on these experts on this selected 
 
     filtersChanged: (evt, detail, sender) ->
       # determine if we're changing the projOwner or projType
-      #if detail.isSelected and @nectar? and @hb?
-      #  @nectar.entities = "['#{detail.item.textContent}']" if detail.item.parentElement.id is 'selectProjType'
+      if detail.isSelected and @$.nectar? and @hb?
+        @$.nectar.entities = "[\"#{detail.item.textContent}\"]" if detail.item.parentElement.id is 'selectProjType'
         @search()
 
 ### queryUpdated
@@ -90,18 +90,15 @@ where this user was either primary or delegate RM or recruiter
     displayResults: (target) ->
       (results) ->
         target.$.projectMatches.model = {matches: results}
-        console.log "results processed: #{results.length}"
 
 ### displayNectarResults
 
     displayNectarResults: (evt) ->
-      console.log "stop here"
       @displayResults(evt.target) evt.detail.results.matches
 
 ### search
 Primary function for retrieving typeahead results from either hummingbird or nectar
 
-    #TODO: enable one or more indexes
     #TODO: create multiple hummingbird indexes: consults, meetings, surveys
     search: () ->
       if @query? and @$.selectProjOwner?.selectedItem? and @$.selectProjType?.selectedItem?
