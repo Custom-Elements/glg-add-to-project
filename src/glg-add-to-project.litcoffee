@@ -7,6 +7,7 @@ survey, meeting, or event.
       scoreThreshold: 0.5
       secondarySortField: 'createDate'
       secondarySortOrder: 'desc'
+      howMany: 10
     Polymer 'glg-add-to-project',
 
 ## Attributes

@@ -9,7 +9,7 @@
   on-results="{{displayNectarResults}}"
   >
   <template>
-    <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less">
+    <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less" shim-shadowdom>
     <glg-current-user id="atpuser" username="{{username}}"></glg-current-user>
     <core-ajax
       auto=true
@@ -26,7 +26,7 @@
       entities="consults"
       interleave="true"
       scoreThreshold="0.5"
-      howMany="5"
+      howMany="10"
       secondarySortField="createDate"
       secondarySortOrder="desc"
       >
@@ -54,19 +54,19 @@
           sticky
           placeholder="Find a project by name..."
           debounce="50">
-        <icon search></icon>
         <template id="projectMatches" repeat="{{matches}}">
           <ui-typeahead-item>
-            <div style="font-size: 1em; color: red;">
+            <div class="proj-name">
               {{name}}
-              <div style="color: #454545; font-size: 0.9em; margin-left: 1em;">
+              <div class="proj-meta">
                 <span>{{createDate | date}} </span>
-                <span style="font-weight: 400;"> {{firm || client}}</span>
+                <span class="proj-meta-important"> {{firm || client}}</span>
               </div>
             </div>
           </ui-typeahead-item>
         </template>
       </ui-typeahead>
+      <icon search></icon>
     </div>
   </template>
   <script src="../bower_components/polymer-filters/filter-date.js"></script>
