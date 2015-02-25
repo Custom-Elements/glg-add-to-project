@@ -40,7 +40,7 @@ The person ID of the RM taking the ATC action on these experts on this selected 
     filtersChanged: (evt, detail, sender) ->
       # determine if we're changing the projOwner or projType
       if detail.isSelected and @$.nectar? and @hb?
-        @$.nectar.entities = "[\"#{detail.item.textContent}\"]" if detail.item.parentElement.id is 'selectProjType'
+        @$.nectar.entities = detail.item.textContent if detail.item.parentElement.id is 'selectProjType'
         @search()
 
 ### queryUpdated

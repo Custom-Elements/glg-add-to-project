@@ -5,7 +5,7 @@
     "polymer-serve": "git://github.com/custom-elements/polymer-serve#master",
     "webcomponents": "git://github.com/custom-elements/webcomponentsjs#master",
     "glg-current-user": "git://github.com/custom-elements/glg-current-user#master",
-    "glg-nectar": "git://github.com/custom-elements/glg-nectar#master",
+    "glg-nectar": "git://github.com/custom-elements/glg-nectar#2.0.1",
     "hummingbird": "git://github.com/glg/hummingbird.js#master",
     "ui-attention": "git://github.com/custom-elements/ui-attention#master",
     "ui-button": "git://github.com/custom-elements/ui-button#master",
