@@ -137,7 +137,6 @@ Hits an epiquery url and returns the results if there are any
         .then undefined, (err) =>
           console.log "Failed to build hb indexes: #{err}"
         .then () =>
-          @$.hbfetching.removeAttribute 'spinner'
           @$.hbfetching.setAttribute 'hidden', true
           @$.inputwrapper.removeAttribute 'class'
           @$.inputwrapper.focus()
