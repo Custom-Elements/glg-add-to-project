@@ -2,24 +2,17 @@
 <link rel="import" href="../node_modules/glg-nectar/src/glg-nectar.html">
 <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="../bower_components/core-selector/core-selector.html">
-<polymer-element name="glg-add-to-project" attributes="cmids appName rmPersonId"
+<link rel="import" href="../node_modules/ui-typeahead/src/ui-typeahead.html">
+<polymer-element name="glg-add-to-project" attributes="cmids appName rmPersonId projectId"
   on-core-select="{{filtersChanged}}"
   on-inputchange="{{queryUpdated}}"
   on-user="{{getMyProjects}}"
   on-results="{{displayNectarResults}}"
+  on-itemselected="{{selectProject}}"
   >
   <template>
     <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less" shim-shadowdom>
     <glg-current-user id="atpuser" username="{{username}}"></glg-current-user>
-    <core-ajax
-      auto=true
-      id="myprojects"
-      method="GET"
-      url=""
-      handleAs="json"
-      withCredentials=true
-      on-core-response="{{buildHummingbirdIndex}}">
-    </core-ajax>
     <glg-nectar
       id="nectar"
       urls="wss://nectar.glgroup.com/ws"
