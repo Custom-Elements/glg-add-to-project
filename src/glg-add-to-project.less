@@ -40,6 +40,7 @@
 
   .proj-meta-important {
     font-weight: 400;
+    padding: 0 0.5rem 0 0.5rem;
   }
 
   .options > span {
@@ -86,52 +87,12 @@
   }
 
   .progress {
-    position: relative;
-    display: inline-block;
-    width: 5em;
-    height: 5em;
-    margin: 0 .5em;
-    font-size: 6px;
-    text-indent: 999em;
-    overflow: hidden;
-    -webkit-animation: spin 1s infinite steps(8);
-    -moz-animation: spin 1s infinite steps(8);
-    -o-animation: spin 1s infinite steps(8);
-    animation: spin 1s infinite steps(8);
+    font-size: 2.5rem;
+    margin-top: 1rem;
+    -webkit-animation: spin 2.5s infinite linear;
+    -moz-animation: spin 2.5s infinite linear;
+    -o-animation: spin 2.5s infinite linear;
+    animation: spin 2.5s infinite linear;
   }
 
-  .progress:before,
-  .progress:after,
-  .progress > div:before,
-  .progress > div:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 2.25em; /* (container width - part width)/2  */
-    width: .5em;
-    height: 1.5em;
-    border-radius: .2em;
-    background: #eee;
-    box-shadow: 0 3.5em #eee; /* container height - part height */
-    transform-origin: 50% 2.5em; /* container height / 2 */
-  }
-
-  .progress:before {
-    background: #555;
-  }
-
-  .progress:after {
-    transform: rotate(-45deg);
-    background: #777;
-  }
-
-  .progress > div:before {
-      transform: rotate(-90deg);
-      background: #999;
-  }
-
-  .progress > div:after {
-    transform: rotate(-135deg);
-    background: #bbb;
-  }
 }

@@ -24,7 +24,7 @@
       secondarySortOrder="desc"
       >
     </glg-nectar>
-    <div id="spinner" class="progress"><div>Loading…</div></div>
+    <icon spinner id="hbfetching" class="progress"></icon>
     <div id="inputwrapper" class="glg-hidden">
       <div id="projowner">
         <span>
@@ -50,10 +50,11 @@
         <template id="projectMatches" repeat="{{matches}}">
           <ui-typeahead-item>
             <div class="proj-name">
+              <icon person-add></icon>
               {{name}}
               <div class="proj-meta">
                 <span>{{createDate | date}} </span>
-                <span class="proj-meta-important"> {{firm || client}}</span>
+                <span class="proj-meta-important"> {{firm || client || type}}</span>
               </div>
             </div>
           </ui-typeahead-item>

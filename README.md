@@ -30,15 +30,15 @@ Currently, the primary use case is the ATC button on the new Advisor's page.
 ### Implementation
 * Use glg-current-user to know who the user is.
   * done
-* Use core-ajax to fetch current-user's consults for last 3 months via epiquery.
+* Use utils.fetch to fetch current-user's consults, surveys, & meetings for last 3 months via epiquery.
   * http://mepiquery.glgroup.com/nectar/glgliveMalory/getConsultsDelta.mustache?lastUpdate=####&personId=####
   * done
 * Use hummingbird to build index and display projects via typeahead.
   * done
 * Use glg-nectar to display projects from all users all time when user wants.
   * done
-* Use core-ajax to add CM to project via epiquery.
-* Use core-ajax within the callback of first core-ajax call to submit to the tracking service.
-* Use dbSockets to add to Mosaic Lists as an option under "project type" - which
+* Use utils.fetch to add CM to project via epiquery.
+* Use utils.fetch within the callback of first core-ajax call to submit to the tracking service.
+* Use dbSockets to add Mosaic Lists as an option under "project type" - which
   should probably be renamed now. Stakeholder: Ariela Rosenberg
 

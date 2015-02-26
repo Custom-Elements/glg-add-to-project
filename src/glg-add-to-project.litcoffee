@@ -122,7 +122,8 @@ Hits an epiquery url and returns the results if there are any
             Promise.reject new Error("fetchEpiResults failed: #{err}")
 
         # lastUpdate must be seconds since epoch for sql server
-        lastUpdate = Math.floor((new Date(new Date() - 1000*60*60*24*90)).getTime()/(60*1000))*60
+        # chosen to round off lastUpdate to the nearest day-ish
+        lastUpdate = Math.floor((new Date(new Date() - 1000*60*60*24*90)).getTime()/(24*60*60*1000))*24*60*60
         # changing the URL triggers core-ajax fetch
         promisesArray = []
         timeout = 3*60*1000 # 3 min timeout
@@ -136,8 +137,8 @@ Hits an epiquery url and returns the results if there are any
         .then undefined, (err) =>
           console.log "Failed to build hb indexes: #{err}"
         .then () =>
-          @$.spinner.removeAttribute 'class'
-          @$.spinner.setAttribute 'hidden', true
+          @$.hbfetching.removeAttribute 'spinner'
+          @$.hbfetching.setAttribute 'hidden', true
           @$.inputwrapper.removeAttribute 'class'
           @$.inputwrapper.focus()
 
