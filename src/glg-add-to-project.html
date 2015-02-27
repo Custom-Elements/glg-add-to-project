@@ -50,8 +50,8 @@
         <template id="projectMatches" repeat="{{matches}}">
           <ui-typeahead-item>
             <div class="proj-name">
-              <icon plus class="ico-add"></icon>
-              {{name}}
+              <span class="ico-add"><icon plus></icon></span>
+              <span>{{name}}</span>
               <div class="proj-meta">
                 <span>{{createDate | date}} </span>
                 <span class="proj-meta-important"> {{firm || client || type}}</span>
