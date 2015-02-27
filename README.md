@@ -42,3 +42,8 @@ Currently, the primary use case is the ATC button on the new Advisor's page.
 * Use dbSockets to add Mosaic Lists as an option under "project type" - which
   should probably be renamed now. Stakeholder: Ariela Rosenberg
 
+### Polish
+* Get designer feedback on GUI style
+* Dump ui-toolkit in favor of slimmer, barebones necessities
+* Push ui-typeahead changes
+* Deploy nectar config changes for secondary sorting

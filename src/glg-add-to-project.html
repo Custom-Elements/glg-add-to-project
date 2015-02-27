@@ -3,8 +3,8 @@
 <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="../bower_components/core-selector/core-selector.html">
 <link rel="import" href="../node_modules/ui-typeahead/src/ui-typeahead.html">
-<polymer-element name="glg-add-to-project" attributes="cmids appName rmPersonId projectId"
-  on-core-select="{{filtersChanged}}"
+<polymer-element name="glg-add-to-project" attributes="cmids appName rmPersonId hideUI displayOwnerFilter displayProjType"
+  on-core-select="{{filtersUpdated}}"
   on-inputchange="{{queryUpdated}}"
   on-user="{{getMyProjects}}"
   on-results="{{displayNectarResults}}"
@@ -25,7 +25,7 @@
       >
     </glg-nectar>
     <icon spinner id="hbfetching" class="progress"></icon>
-    <div id="inputwrapper" class="glg-hidden">
+    <div id="inputwrapper" hidden=true>
       <div id="projowner">
         <span>
           <core-selector id="selectProjOwner" multi="false" class="options" selected="0">
@@ -45,7 +45,7 @@
       <ui-typeahead
           id="projects"
           sticky
-          placeholder="Find a project by name..."
+         placeholder="Find a project by name..."
           debounce="50">
         <template id="projectMatches" repeat="{{matches}}">
           <ui-typeahead-item>
