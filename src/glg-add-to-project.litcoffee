@@ -8,11 +8,15 @@ survey, or various types of in-person meetings.
       secondarySortField: 'createDate'
       secondarySortOrder: 'desc'
       howMany: 10
+    epiquery2 = require 'epiquery2'
+    epiUrlTemplate = ".glgresearch.com/epistream-consultations-clustered/sockjs/websocket"
+    episervers = ("wss://#{region}#{epiUrlTemplate}" for region in ['services','asia','east','europe','west'])
+    epi = new epiquery2.EpiClient episervers
 
     Polymer 'glg-add-to-project',
 
 ## Attributes
-### cmids
+### cmIds
 The IDs of council members to be added to the selected project
 
 ### appName
@@ -35,9 +39,27 @@ The person ID of the RM taking the ATC action on these experts on this selected 
 Collection of hummingbird indexes, one per type of project entity
 
       hb:
-        consults: new hummingbird()
-        meetings: new hummingbird()
-        surveys: new hummingbird()
+        consults: new hummingbird
+        meetings: new hummingbird
+        surveys: new hummingbird
+
+
+## Attribute Change Handlers
+### cmIdsChanged
+
+      cmIdsChanged: (oldVal, newVal) ->
+        uri = "councilMember/getCouncilMemberBrief.mustache"
+        post =
+          councilMemberIds: newVal.split ','
+        @postToEpiquery uri, post, 15*1000
+        .then undefined, (err) =>
+          console.error "#{err}"
+          Promise.reject()
+        .then (messages) =>
+          @councilMembers[cmData.councilMemberId] = cmData for cmData in messages
+          @councilMemberNames = messages.map (cmData, i, messages) ->
+            cmData.firstName + ' ' + cmData.lastName
+          @councilMembersStr = @councilMemberNames.join ', '
 
 ## Events
 ### atp-started
@@ -66,50 +88,35 @@ Executes a new search with the new query
         @query = detail.value
         @search()
 
-### fetchEpiResults
-Hits an epiquery url and returns the results if there are any
+### postToEpiquery
+Posts a payload to epiquery, then either executes the supplied callback on the results or resolves the promise with the results
 
-      fetchEpiResults: (url, timeout, callback) ->
-
-#### getJSONUrl
-getJSONUrl takes a single paramater which can be either a string (the url)
-or an object, specifing url and timeout: {url:'http://myurl.com',timeout:1000}
-
-        getJSONUrl = (url, timeout) ->
-          new Promise (resolve,reject) ->
-            request = new XMLHttpRequest
-            request.async = false
-            request.withCredentials = true
-            request.responseType = 'json'
-            request.timeout = timeout if timeout?
-            request.ontimeout = () ->
-              reject new Error "getUrl timed out fetching #{url}"
-            request.onload = () ->
-              console.log "response received from #{url}"
-              resolve request.response
-            request.onerror = () ->
-              reject new Error "getUrl failed: #{request.response.statusText}"
-            request.open 'GET', url
-            request.send()
-
-        #Fetch and then process results
-        console.log "Fetching #{url}"
-        getJSONUrl url, timeout
-        .then (output) ->
-          if Array.isArray(output)
-            callback if Array.isArray(output[output.length-1]) then output[output.length-1] else output
-            Promise.resolve()
-          else
-            Promise.reject new Error("received unexpected result format")
-        .then undefined, (err) ->
-          Promise.reject new Error("fetchEpiResults failed: #{err}")
+      postToEpiquery: (uri, post, timeout, cb) ->
+        new Promise (resolve,reject) =>
+          qid = Math.random()
+          msgArray = []
+          epi.on 'endrowset', (msg) =>
+            if qid is msg.queryId
+              if cb?
+                resolve()
+              else
+              resolve msgArray
+          epi.on 'row', (msg) =>
+            if qid is msg.queryId
+              if cb?
+                cb msg.columns
+              else
+                msgArray.push msg.columns
+          epi.on 'error', (msg) =>
+            reject new Error "postToEpiquery failed: #{msg.error}"
+          epi.query 'glglive_o', uri, post, qid
 
 ### getMyProjects
 Fetch of names of projects created in the last 90 days
 where this user was either primary or delegate RM or recruiter
 
       getMyProjects: (currentuser) ->
-        fetchEpiResults = @fetchEpiResults
+        postToEpiquery = @postToEpiquery
 
 #### buildHbIndex
 Builds a hummingbird index with the list of projects returned by core-ajax call to epiquery
@@ -117,28 +124,34 @@ Builds a hummingbird index with the list of projects returned by core-ajax call 
         buildHbIndex = (entity) =>
           (data) =>
             # build hb index from data
-            @hb[entity].add project for project in data
-            console.log "hummingbird #{entity}: #{Object.keys(@hb[entity].metaStore.root).length} items"
+            @hb[entity].add data
 
         # lastUpdate must be seconds since epoch for sql server
         # chosen to round off lastUpdate to the nearest day-ish
         lastUpdate = Math.floor((new Date(new Date() - 1000*60*60*24*90)).getTime()/(24*60*60*1000))*24*60*60
-        # changing the URL triggers core-ajax fetch
         promisesArray = []
         timeout = 3*60*1000 # 3 min timeout
-        myConsultsUrl = "//mepiquery.glgroup.com/nectar/glgliveMalory/getConsultsDelta.mustache?lastUpdate=#{lastUpdate}&personId=#{@rmPersonId ? currentuser.detail.personId}"
-        mySurveysUrl = "//mepiquery.glgroup.com/nectar/glgliveMalory/getSurveyDelta.mustache?lastUpdate=#{lastUpdate}&personId=#{@rmPersonId ? currentuser.detail.personId}"
-        myMeetingsUrl = "//mepiquery.glgroup.com/nectar/glgliveMalory/getEventsGroupsVisitsDelta.mustache?lastUpdate=#{lastUpdate}&personId=#{@rmPersonId ? currentuser.detail.personId}"
-        promisesArray.push fetchEpiResults(myConsultsUrl, timeout, buildHbIndex 'consults')
-        promisesArray.push fetchEpiResults(mySurveysUrl, timeout, buildHbIndex 'surveys')
-        promisesArray.push fetchEpiResults(myMeetingsUrl, timeout, buildHbIndex 'meetings')
+        post =
+          lastUpdate: lastUpdate
+          personId: @rmPersonId ? currentuser.detail.personId
+        myConsultsUri = "nectar/glgliveMalory/getConsultsDelta.mustache"
+        mySurveysUri = "nectar/glgliveMalory/getSurveyDelta.mustache"
+        myMeetingsUri = "nectar/glgliveMalory/getEventsGroupsVisitsDelta.mustache"
+        promisesArray.push postToEpiquery(myConsultsUri, post, timeout, buildHbIndex 'consults')
+        promisesArray.push postToEpiquery(mySurveysUri, post, timeout, buildHbIndex 'surveys')
+        promisesArray.push postToEpiquery(myMeetingsUri, post, timeout, buildHbIndex 'meetings')
+        console.debug "Promise.all fired"
         Promise.all promisesArray
         .then undefined, (err) =>
-          console.log "Failed to build hb indexes: #{err}"
+          console.warn "Failed to build hb indexes: #{err}"
+          Promise.reject()
         .then () =>
+          for entity in Object.keys @hb
+            console.debug "hummingbird #{entity}: #{Object.keys(@hb[entity].metaStore.root).length} items"
           @$.hbfetching.setAttribute 'hidden', true
           @$.inputwrapper.removeAttribute 'hidden' unless @hideUI
-          @$.inputwrapper.focus()
+          @$.inputwrapper.focus() unless @hideUI
+          @fire 'add-to-project-ready'
 
 ### displayResults
 Used by displayNectarResults and directly as a callback passed to hummingbird index queries.
@@ -170,40 +183,64 @@ Primary function for retrieving typeahead results from either hummingbird or nec
               @$.nectar.jump @query
 
 ### selectProject
-Attaches the council member(s) to the selected project
+Does the attaching of council member(s) to the selected project
 
       selectProject: () ->
         selectedProject = @$.projects.value
         entity = @$.selectProjType.selectedItem.innerText
 
-        # currently, we only track adds to consults
-        track = (app=@appName, projId=selectedProject.id, cmIds=@cmids, rmId=@rmPersonId, action='add') =>
+        track = (app=@appName, projId=selectedProject.id, cmIds=@cmIds, rmId=@rmPersonId, action='add') =>
+          # tracking is intended to be fire-and-forget
+          async = true
           url = "//services.glgresearch.com/trackingexpress/"
           url += "track/appName/#{app}/action/#{action}/personId/#{rmId}/consultationId/#{projId}/cmIds/[#{cmIds.split ','}]"
           request = new XMLHttpRequest
           request.withCredentials = true
           debugger
-          #request.open 'GET', url
+          #request.open 'GET', url, async
           #request.send()
 
+        uri = ""
         switch entity
           when 'consults'
-            console.log "consult selected #{selectedProject.name} (#{selectedProject.id})"
-            track()
+            console.info "consult selected #{selectedProject.name} (#{selectedProject.id})"
+            postData =
+              consultationId: selectedProject.id
+              councilMembers: {id: id} for id in @cmIds.split ','
+              userPersonId: @rmPersonId
+            uri = "consultations/new/attachParticipants.mustache"
           when 'surveys'
-            console.log "survey selected #{selectedProject.name} (#{selectedProject.id})"
-          when 'meetings'
-            console.log "meeting selected #{selectedProject.name} (#{selectedProject.id})"
-            url = "//query.glgroup.com/Event/attachCouncilMember.mustache?"
-            url += "MeetingId=#{selectedProject.id}"
-            url += "&PersonIds=#{_.map(selectedIds, (id) -> {PersonId: id})}"
-            url += "&LastUpdatedBy=#{@rmPersonId}"
-
-### prettyDate
-Human readable formatted date string
-
-      prettyDate: (d) ->
-        d.toLocaleDateString()
+            console.info "survey selected #{selectedProject.name} (#{selectedProject.id})"
+            postData =
+              surveyId: selectedProject.id
+              personIds: @councilMembers[id].personId for id in @cmIds.split ','
+              rmPersonId: @rmPersonId
+            uri = "survey/qualtrics/attachCMToSurvey.mustache"
+          when 'meetings' # aka, events, visits
+            console.info "meeting selected #{selectedProject.name} (#{selectedProject.id})"
+            postData =
+              MeetingId: selectedProject.id
+              PersonIds: {PersonId: @councilMembers[id].personId} for id in @cmIds.split ','
+              LastUpdatedBy: @rmPersonId
+            uri = "Event/attachCouncilMember.mustache"
+          else
+            console.error "unknown entity type: #{entity}"
+            return
+        debugger
+        postToEpiquery uri, postData, 3*60*1000
+        .then undefined, (err) ->
+          console.error "** failed to attach to project: #{err}"
+          @fire 'attachFailure',
+            entity: entity
+            projectId: selectedProject.id
+            cmIds: @cmIds.split ','
+          Promise.reject()
+        .then (results) ->
+          @fire 'attachSuccess',
+            entity: entity
+            projectId: selectedProject.id
+            cmIds: @cmIds.split ','
+          track() if entity is 'consults' # currently, we only track adds to consults
 
 ## Polymer Lifecycle
 
@@ -213,9 +250,13 @@ Human readable formatted date string
       ready: ->
         @$.inputwrapper.setAttribute 'unresolved', ''
         @$.hbfetching.setAttribute 'hidden', 'true' if @hideUI
-        console.log "cmids: #{@cmids}"
-        console.log "appName: #{@appName}"
-        console.log "rmPersonId: #{@rmPersonId}"
+        @$.selectProjOwner.setAttribute 'hidden', true if @hideOwnerFilter or @hideUI
+        @$.selectProjType.setAttribute 'hidden', true if @hideProjType or @hideUI
+        @$.filterPipe.setAttribute 'hidden', true if @hideProjType or @hideOwnerFilter or @hideUI
+        @$.experts.setAttribute 'hidden', true if @hideExperts or @hideUI
+        @councilMembersStr = ""
+        @councilMemberNames = []
+        @councilMembers = {} # key=cmId
 
       attached: ->
 

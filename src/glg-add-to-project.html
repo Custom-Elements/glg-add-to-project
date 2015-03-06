@@ -3,7 +3,7 @@
 <link rel="import" href="../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="../bower_components/core-selector/core-selector.html">
 <link rel="import" href="../node_modules/ui-typeahead/src/ui-typeahead.html">
-<polymer-element name="glg-add-to-project" attributes="cmids appName rmPersonId hideUI displayOwnerFilter displayProjType"
+<polymer-element name="glg-add-to-project" attributes="cmIds appName rmPersonId hideUI hideOwnerFilter hideProjType hideExperts"
   on-core-select="{{filtersUpdated}}"
   on-inputchange="{{queryUpdated}}"
   on-user="{{getMyProjects}}"
@@ -24,6 +24,10 @@
       secondarySortOrder="desc"
       >
     </glg-nectar>
+    <div id="experts" class="to-be-added">
+      <span style="font-weight:bold;padding-right:1rem;">Attaching:</span>
+      <span id="toBeAdded">{{councilMembersStr}}</span>
+    </div>
     <icon spinner id="hbfetching" class="progress"></icon>
     <div id="inputwrapper" hidden=true>
       <div id="projowner">
@@ -33,7 +37,7 @@
             <span>anyone</span>
           <core-selector>
         </span>
-        <span style="font-size: 1rem; font-weight:bold; color:lightgrey;">|</span>
+        <span id="filterPipe" style="font-size: 1rem; font-weight:bold; color:lightgrey;">|</span>
         <span>
           <core-selector id="selectProjType" multi="false" class="options" selected="0">
             <span>consults</span>
@@ -63,6 +67,7 @@
       <icon search></icon>
     </div>
   </template>
+  <script src="epiclient_v3.js"></script>
   <script src="../bower_components/polymer-filters/filter-date.js"></script>
   <script src="./glg-add-to-project.litcoffee"></script>
 </polymer-element>

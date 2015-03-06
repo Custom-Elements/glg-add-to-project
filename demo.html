@@ -3,7 +3,7 @@
 <html>
   <head>
     <title>glg-add-to-project</title>
-    <script src="node_modules/webcomponents.js/webcomponents.js"></script>
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="https://services.glgresearch.com/ui-toolkit/polymer.html">
     <link rel="import" href="https://services.glgresearch.com/ui-toolkit/ui-toolkit.html">
     <link rel="import" href="src/glg-add-to-project.html">
@@ -22,7 +22,7 @@
     <h1 style="text-align: left">Add to Project demo</h1>
     <glg-add-to-project
       id="atp"
-      cmids="3938"
+      cmIds="3938"
       appName="balrog"
       rmPersonId="881448"
       style="width: 25rem;"
@@ -39,12 +39,11 @@
         var p = item.split('=')
         qparams[p[0]] = p[1];
       });
-      console.log("query params: " + JSON.stringify(qparams));
-      if (typeof qparams['cmids'] !== 'undefined') {
-        atp.cmids = qparams['cmids'];
+      if (typeof qparams['cmIds'] !== 'undefined') {
+        atp.setAttribute('cmIds', qparams['cmIds']);
       }
       if (typeof qparams['appName'] !== 'undefined') {
-        atp.appName = qparams['appName'];
+        atp.setAttribute('appName', qparams['appName']);
       }
     });
   </script>
