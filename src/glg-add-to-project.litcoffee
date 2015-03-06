@@ -9,8 +9,9 @@ survey, or various types of in-person meetings.
       secondarySortOrder: 'desc'
       howMany: 10
     epiquery2 = require 'epiquery2'
-    epiUrlTemplate = ".glgresearch.com/epistream-consultations-clustered/sockjs/websocket"
-    episervers = ("wss://#{region}#{epiUrlTemplate}" for region in ['services','asia','east','europe','west'])
+    epiUrlTemplate = "glgresearch.com/epistream-consultations-clustered/sockjs/websocket"
+    #episervers = ("wss://#{region}.#{epiUrlTemplate}" for region in ['services','asia','east','europe','west'])
+    episervers = "wss://services.#{epiUrlTemplate}"
     epi = new epiquery2.EpiClient episervers
 
     Polymer 'glg-add-to-project',
@@ -53,7 +54,7 @@ Collection of hummingbird indexes, one per type of project entity
           councilMemberIds: newVal.split ','
         @postToEpiquery uri, post, 15*1000
         .then undefined, (err) =>
-          console.error "#{err}"
+          console.error "cmIdsChanged but failed to fetch details: #{err}"
           Promise.reject()
         .then (messages) =>
           @councilMembers[cmData.councilMemberId] = cmData for cmData in messages
@@ -133,7 +134,7 @@ Builds a hummingbird index with the list of projects returned by core-ajax call 
         timeout = 3*60*1000 # 3 min timeout
         post =
           lastUpdate: lastUpdate
-          personId: @rmPersonId ? currentuser.detail.personId
+          personId: @rmPersonId ? currentuser?.detail?.personId
         myConsultsUri = "nectar/glgliveMalory/getConsultsDelta.mustache"
         mySurveysUri = "nectar/glgliveMalory/getSurveyDelta.mustache"
         myMeetingsUri = "nectar/glgliveMalory/getEventsGroupsVisitsDelta.mustache"
@@ -229,13 +230,13 @@ Does the attaching of council member(s) to the selected project
         debugger
         postToEpiquery uri, postData, 3*60*1000
         .then undefined, (err) ->
-          console.error "** failed to attach to project: #{err}"
+          console.error "selectProject failed to attach: #{err}"
           @fire 'attachFailure',
             entity: entity
             projectId: selectedProject.id
             cmIds: @cmIds.split ','
           Promise.reject()
-        .then (results) ->
+        .then (messages) ->
           @fire 'attachSuccess',
             entity: entity
             projectId: selectedProject.id
@@ -254,16 +255,12 @@ Does the attaching of council member(s) to the selected project
         @$.selectProjType.setAttribute 'hidden', true if @hideProjType or @hideUI
         @$.filterPipe.setAttribute 'hidden', true if @hideProjType or @hideOwnerFilter or @hideUI
         @$.experts.setAttribute 'hidden', true if @hideExperts or @hideUI
-        @councilMembersStr = ""
         @councilMemberNames = []
         @councilMembers = {} # key=cmId
+        @councilMembersStr = "none chosen"
 
       attached: ->
 
       domReady: ->
 
       detached: ->
-
-      publish:
-        taskview:
-          reflect: true
