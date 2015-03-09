@@ -29,18 +29,18 @@ Currently, the primary use case is the ATC button on the new Advisor's page.
 
 ### Implementation
 * Use glg-current-user to know who the user is.
-  * done
+  * DONE
 * Use epiclient to fetch current-user's consults, surveys, & meetings for last 3 months via epiquery.
   * http://mepiquery.glgroup.com/nectar/glgliveMalory/getConsultsDelta.mustache?lastUpdate=####&personId=####
-  * done
+  * DONE
 * Use hummingbird to build index and display projects via typeahead.
-  * done
+  * DONE
 * Use glg-nectar to display projects from all users all time when user wants.
-  * done
+  * DONE
 * Use epiclient to add CM to project via epiquery.
-  * in process
+  * DONE
 * Use XMLHTTPRequest within the callback of first core-ajax call to submit to the tracking service.
-  * in process
+  * DONE
 * Use dbSockets to add Mosaic Lists as an option under "project type" - which
   should probably be renamed now. Stakeholder: Ariela Rosenberg
 
@@ -48,5 +48,7 @@ Currently, the primary use case is the ATC button on the new Advisor's page.
 * Persist HB indexes with lastUpdate datetime to local storage for faster subsequent loading
 * Get designer feedback on GUI style
 * Dump ui-toolkit in favor of slimmer, barebones necessities
-* Push ui-typeahead changes - DONE
+* Push ui-typeahead changes
+  * DONE
 * Deploy nectar config changes for secondary sorting
+  * DONE

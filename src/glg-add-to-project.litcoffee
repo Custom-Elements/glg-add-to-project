@@ -117,7 +117,7 @@ Fetch of names of projects created in the last 90 days
 where this user was either primary or delegate RM or recruiter
 
       getMyProjects: (currentuser) ->
-        postToEpiquery = @postToEpiquery
+        @rmPersonId = @rmPersonId ? currentuser?.detail?.personId
 
 #### buildHbIndex
 Builds a hummingbird index with the list of projects returned by core-ajax call to epiquery
@@ -138,9 +138,9 @@ Builds a hummingbird index with the list of projects returned by core-ajax call 
         myConsultsUri = "nectar/glgliveMalory/getConsultsDelta.mustache"
         mySurveysUri = "nectar/glgliveMalory/getSurveyDelta.mustache"
         myMeetingsUri = "nectar/glgliveMalory/getEventsGroupsVisitsDelta.mustache"
-        promisesArray.push postToEpiquery(myConsultsUri, post, timeout, buildHbIndex 'consults')
-        promisesArray.push postToEpiquery(mySurveysUri, post, timeout, buildHbIndex 'surveys')
-        promisesArray.push postToEpiquery(myMeetingsUri, post, timeout, buildHbIndex 'meetings')
+        promisesArray.push @postToEpiquery(myConsultsUri, post, timeout, buildHbIndex 'consults')
+        promisesArray.push @postToEpiquery(mySurveysUri, post, timeout, buildHbIndex 'surveys')
+        promisesArray.push @postToEpiquery(myMeetingsUri, post, timeout, buildHbIndex 'meetings')
         console.debug "Promise.all fired"
         Promise.all promisesArray
         .then undefined, (err) =>
@@ -197,9 +197,8 @@ Does the attaching of council member(s) to the selected project
           url += "track/appName/#{app}/action/#{action}/personId/#{rmId}/consultationId/#{projId}/cmIds/[#{cmIds.split ','}]"
           request = new XMLHttpRequest
           request.withCredentials = true
-          debugger
-          #request.open 'GET', url, async
-          #request.send()
+          request.open 'GET', url, async
+          request.send()
 
         uri = ""
         switch entity
@@ -211,12 +210,23 @@ Does the attaching of council member(s) to the selected project
               userPersonId: @rmPersonId
             uri = "consultations/new/attachParticipants.mustache"
           when 'surveys'
-            console.info "survey selected #{selectedProject.name} (#{selectedProject.id})"
-            postData =
-              surveyId: selectedProject.id
-              personIds: @councilMembers[id].personId for id in @cmIds.split ','
-              rmPersonId: @rmPersonId
-            uri = "survey/qualtrics/attachCMToSurvey.mustache"
+            console.info "survey selected name: #{selectedProject.name}, id: #{selectedProject.id}, type: #{selectedProject.type}"
+            debugger
+            if selectedProject.type is 'Surveys 3.0'
+              postData =
+                surveyId: selectedProject.id
+                personIds: @councilMembers[id].personId for id in @cmIds.split ','
+                rmPersonId: @rmPersonId
+              uri = "survey/qualtrics/attachCMToSurvey.mustache"
+            else if selectedProject.type is 'Surveys 2.0'
+              postData =
+                SurveyId: selectedProject.id
+                personIds: @councilMembers[id].personId for id in @cmIds.split ','
+                rmPersonId: @rmPersonId
+              uri = "survey/attachCMToSurvey20.mustache"
+            else
+              console.error "unknown survey type: #{selectedProject.type}"
+              return
           when 'meetings' # aka, events, visits
             console.info "meeting selected #{selectedProject.name} (#{selectedProject.id})"
             postData =
@@ -227,16 +237,16 @@ Does the attaching of council member(s) to the selected project
           else
             console.error "unknown entity type: #{entity}"
             return
-        debugger
-        postToEpiquery uri, postData, 3*60*1000
-        .then undefined, (err) ->
+        @postToEpiquery uri, postData, 3*60*1000
+        .then undefined, (err) =>
           console.error "selectProject failed to attach: #{err}"
           @fire 'attachFailure',
             entity: entity
             projectId: selectedProject.id
             cmIds: @cmIds.split ','
           Promise.reject()
-        .then (messages) ->
+        .then (messages) =>
+          console.info "selectProject successfully attached"
           @fire 'attachSuccess',
             entity: entity
             projectId: selectedProject.id
