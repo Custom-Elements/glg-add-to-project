@@ -16,27 +16,31 @@ survey, or various types of in-person meetings.
 
     Polymer 'glg-add-to-project',
 
-## Attributes
-### cmIds
+### Attributes
+#### cmIds
 The IDs of council members to be added to the selected project
 
-### appName
+#### appName
 The name to use to identify the application or feature used in ATC for tracking dashboard purposes
 
-### displayUI
-Toggles whether to display a UI at all, or to simply expose the component as an invisible service.
+#### hideUI
+Toggles whether to display a UI at all.  If not included, it is displayed.
+If included as an attribute on the element, the component is available as an invisible service.
 
-### displayOwnerFilter
-Toggles whether to display the project owner filter in the UI.  Default: true
+#### hideOwnerFilter
+Toggles whether to display the project owner filter in the UI.  If not included, it is displayed.
 
-### displayProjType
-Toggles whether to display the project type filter in the UI.  Default: true
+#### hideProjType
+Toggles whether to display the project type filter in the UI.  If not included, it is displayed.
 
-### rmPersonId
+#### hideExperts
+Toggles whether to display the Council Members to-be-added in the UI.  If not included, it is displayed.
+
+#### rmPersonId
 The person ID of the RM taking the ATC action on these experts on this selected project
 
-## Globals
-### hb
+### Globals
+#### hb
 Collection of hummingbird indexes, one per type of project entity
 
       hb:
@@ -45,8 +49,8 @@ Collection of hummingbird indexes, one per type of project entity
         surveys: new hummingbird
 
 
-## Attribute Change Handlers
-### cmIdsChanged
+### Attribute Change Handlers
+#### cmIdsChanged
 
       cmIdsChanged: (oldVal, newVal) ->
         uri = "councilMember/getCouncilMemberBrief.mustache"
@@ -62,21 +66,21 @@ Collection of hummingbird indexes, one per type of project entity
             cmData.firstName + ' ' + cmData.lastName
           @councilMembersStr = @councilMemberNames.join ', '
 
-## Events
-### atp-ready
+### Events
+#### atp-ready
 fired as soon as hummingbird indexes are built and available for searching
 
-### atp-started
+#### atp-started
 fired when an expert is about to be added to a project
 
-### atp-succeeded
+#### atp-succeeded
 fired after an expert was successfully added to a project
 
-### atp-failed
+#### atp-failed
 fired after failing to add an expert to a project
 
-## Methods
-### filtersUpdated
+### Methods
+#### filtersUpdated
 Executes a new search when a different type of project is selected
 
       filtersUpdated: (evt, detail, sender) ->
@@ -85,14 +89,14 @@ Executes a new search when a different type of project is selected
           @$.nectar.entities = detail.item.textContent if detail.item.parentElement.id is 'selectProjType'
           @search()
 
-### queryUpdated
+#### queryUpdated
 Executes a new search with the new query
 
       queryUpdated: (evt, detail, sender) ->
         @query = detail.value
         @search()
 
-### postToEpiquery
+#### postToEpiquery
 Posts a payload to epiquery, then either executes the supplied callback on the results or resolves the promise with the results
 
       postToEpiquery: (uri, post, timeout, cb) ->
@@ -115,14 +119,14 @@ Posts a payload to epiquery, then either executes the supplied callback on the r
             reject new Error "postToEpiquery failed: #{msg.error}"
           epi.query 'glglive_o', uri, post, qid
 
-### getMyProjects
+#### getMyProjects
 Fetch of names of projects created in the last 90 days
 where this user was either primary or delegate RM or recruiter
 
       getMyProjects: (currentuser) ->
         @rmPersonId = @rmPersonId ? currentuser?.detail?.personId
 
-#### buildHbIndex
+##### buildHbIndex
 Builds a hummingbird index with the list of projects returned by core-ajax call to epiquery
 
         buildHbIndex = (entity) =>
@@ -158,20 +162,20 @@ Builds a hummingbird index with the list of projects returned by core-ajax call 
           @fire 'add-to-project-ready'
           console.log "fired 'atp-ready'"
 
-### displayResults
+#### displayResults
 Used by displayNectarResults and directly as a callback passed to hummingbird index queries.
 
       displayResults: (target) ->
         (results) ->
           target.$.projectMatches.model = {matches: results}
 
-### displayNectarResults
+#### displayNectarResults
 Used to display nectar results and assumes that the results are interleaved, not grouped by entity.
 
       displayNectarResults: (evt, detail, sender) ->
         @displayResults(evt.target) detail.results.matches
 
-### search
+#### search
 Primary function for retrieving typeahead results from either hummingbird or nectar
 
       search: () ->
@@ -187,7 +191,7 @@ Primary function for retrieving typeahead results from either hummingbird or nec
             else
               @$.nectar.jump @query
 
-### selectProject
+#### selectProject
 Does the attaching of council member(s) to the selected project
 
       selectProject: () ->
@@ -262,7 +266,7 @@ Does the attaching of council member(s) to the selected project
           console.log "fired 'atp-succeeded'"
           track() if entity is 'consults' # currently, we only track adds to consults
 
-## Polymer Lifecycle
+### Polymer Lifecycle
 
       created: ->
         @hideUI = false
