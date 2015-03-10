@@ -10,6 +10,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
 
   .glg-hidden {
     opacity: 0;
@@ -63,8 +65,8 @@
     border-width: thin;
     border-color: lightgrey;
     border-style: solid;
-    border-radius: 5px;
-    padding: 10px 5px;
+    border-radius: 0.50rem;
+    padding: 0.75rem 0.50rem;
   }
 
   @-webkit-keyframes spin {

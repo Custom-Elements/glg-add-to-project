@@ -101,7 +101,7 @@ Posts a payload to epiquery, then either executes the supplied callback on the r
               if cb?
                 resolve()
               else
-              resolve msgArray
+                resolve msgArray
           epi.on 'row', (msg) =>
             if qid is msg.queryId
               if cb?
@@ -211,7 +211,6 @@ Does the attaching of council member(s) to the selected project
             uri = "consultations/new/attachParticipants.mustache"
           when 'surveys'
             console.info "survey selected name: #{selectedProject.name}, id: #{selectedProject.id}, type: #{selectedProject.type}"
-            debugger
             if selectedProject.type is 'Surveys 3.0'
               postData =
                 surveyId: selectedProject.id
