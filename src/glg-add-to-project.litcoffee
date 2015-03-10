@@ -63,6 +63,9 @@ Collection of hummingbird indexes, one per type of project entity
           @councilMembersStr = @councilMemberNames.join ', '
 
 ## Events
+### atp-ready
+fired as soon as hummingbird indexes are built and available for searching
+
 ### atp-started
 fired when an expert is about to be added to a project
 
@@ -153,6 +156,7 @@ Builds a hummingbird index with the list of projects returned by core-ajax call 
           @$.inputwrapper.removeAttribute 'hidden' unless @hideUI
           @$.inputwrapper.focus() unless @hideUI
           @fire 'add-to-project-ready'
+          console.log "fired 'atp-ready'"
 
 ### displayResults
 Used by displayNectarResults and directly as a callback passed to hummingbird index queries.
@@ -189,6 +193,11 @@ Does the attaching of council member(s) to the selected project
       selectProject: () ->
         selectedProject = @$.projects.value
         entity = @$.selectProjType.selectedItem.innerText
+        @fire 'atp-started',
+          entity: entity
+          projectId: selectedProject.id
+          cmIds: @cmIds.split ','
+        console.log "fired 'atp-started'"
 
         track = (app=@appName, projId=selectedProject.id, cmIds=@cmIds, rmId=@rmPersonId, action='add') =>
           # tracking is intended to be fire-and-forget
@@ -238,18 +247,19 @@ Does the attaching of council member(s) to the selected project
             return
         @postToEpiquery uri, postData, 3*60*1000
         .then undefined, (err) =>
-          console.error "selectProject failed to attach: #{err}"
-          @fire 'attachFailure',
+          @fire 'atp-failed',
             entity: entity
             projectId: selectedProject.id
             cmIds: @cmIds.split ','
+            error: err
+          console.log "fired 'atp-failed': #{err}"
           Promise.reject()
         .then (messages) =>
-          console.info "selectProject successfully attached"
-          @fire 'attachSuccess',
+          @fire 'atp-succeeded',
             entity: entity
             projectId: selectedProject.id
             cmIds: @cmIds.split ','
+          console.log "fired 'atp-succeeded'"
           track() if entity is 'consults' # currently, we only track adds to consults
 
 ## Polymer Lifecycle

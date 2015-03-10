@@ -1,7 +1,5 @@
 # glg-add-to-project
 
-**WORK IN PROGRESS - NOT READY FOR USE**
-
 Polymer component that exposes a service end-point for adding one or more CMs to
 a single consult, survey, meeting, or event as selected by the user via nectar/hummingbird typeahead.
 It relies on glue code to grab personId of current user, project ID, and
