@@ -19,38 +19,9 @@ Currently, the primary use case is the ATC button on the new Advisor's page.
 
 `npm test`
 
-## THE PLAN
-
-### Analysis
-* Analyze distribution of consult age at time of ATC for the last 12 months.
-  * sharp drop off after 3 months
-* Analyze probability of ATC by unassociated RM for the last 12 months.
-  * roughly 65% of ATC done by primary/delegate, 35% are by another RM.
-* Analyze same distributions/probabilities for surveys, meetings, and events.
-  * TBD
-
-### Implementation
-* Use glg-current-user to know who the user is.
-  * DONE
-* Use epiclient to fetch current-user's consults, surveys, & meetings for last 3 months via epiquery.
-  * http://mepiquery.glgroup.com/nectar/glgliveMalory/getConsultsDelta.mustache?lastUpdate=####&personId=####
-  * DONE
-* Use hummingbird to build index and display projects via typeahead.
-  * DONE
-* Use glg-nectar to display projects from all users all time when user wants.
-  * DONE
-* Use epiclient to add CM to project via epiquery.
-  * DONE
-* Use XMLHTTPRequest within the callback of first core-ajax call to submit to the tracking service.
-  * DONE
+## To Do
 * Use dbSockets to add Mosaic Lists as an option under "project type" - which
   should probably be renamed now. Stakeholder: Ariela Rosenberg
-
-### Polish
 * Persist HB indexes with lastUpdate datetime to local storage for faster subsequent loading
 * Get designer feedback on GUI style
 * Dump ui-toolkit in favor of slimmer, barebones necessities
-* Push ui-typeahead changes
-  * DONE
-* Deploy nectar config changes for secondary sorting
-  * DONE
