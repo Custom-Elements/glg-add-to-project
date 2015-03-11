@@ -21,16 +21,18 @@ Then,
 
 Alternatively,
 * edit your `/etc/hosts` to add an entry like `127.0.0.1 consultations.glgroup.com`
+  * This ensures that [glg-currrent-user](https://github.com/Custom-Elements/glg-current-user) can read your cookies.
 * then open Chrome to `http://consultations.glgroup.com:1000/demo.html`
-* (This ensures that [glg-currrent-user](https://github.com/Custom-Elements/glg-current-user) can read your cookies.)
 
-
+```
     BEWARE:
 
-    As is, the demo will no-foolin' attach real CMs to real projects in
+    As is, if you use the demo to attach a CM to a project, it will,
+    no-foolin', attach real CMs to real projects in
     the real production database.  Clean-up after yourself!
 
     i.e., unattach said CMs from said project via the web UI.
+```
 
 ## To Do
 * Use dbSockets to add Mosaic Lists as an option under "project type" - which
