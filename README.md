@@ -24,6 +24,14 @@ Alternatively,
 * then open Chrome to `http://consultations.glgroup.com:1000/demo.html`
 * (This ensures that [glg-currrent-user](https://github.com/Custom-Elements/glg-current-user) can read your cookies.)
 
+
+    BEWARE:
+
+    As is, the demo will no-foolin' attach real CMs to real projects in
+    the real production database.  Clean-up after yourself!
+
+    i.e., unattach said CMs from said project via the web UI.
+
 ## To Do
 * Use dbSockets to add Mosaic Lists as an option under "project type" - which
   should probably be renamed now. Stakeholder: Ariela Rosenberg
@@ -34,7 +42,8 @@ Alternatively,
 
 ## Attributes
 ##### cmIds
-The IDs of council members to be added to the selected project
+The IDs of council members to be added to the selected project.
+Expected to be a comma separated string of ints.
 
 ##### appName
 The name to use to identify the application or feature used in ATC for tracking dashboard purposes
