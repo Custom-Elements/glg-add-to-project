@@ -1,11 +1,10 @@
 # glg-add-to-project
 
-Polymer component that exposes a service end-point for adding one or more CMs to
-a single consult, survey, meeting, or event as selected by the user via nectar/hummingbird typeahead.
-It relies on glue code to grab personId of current user, project ID, and
-CMID, then assigns the values to this element's published attributes.
+Polymer component for adding one or more CMs to a single consult, survey, meeting, or event as selected by the user
+via nectar/hummingbird typeahead. It relies on glue code to supply the council member ID(s) via this element's published attribute.
 
-Currently, the primary use case is the ATC button on the new Advisor's page.
+The current use case is the *Add To Consultation* button on the new [Advisor
+Details](https://services.glgresearch.com/advisors/#/cm/3938) page.
 
 ## Developing
 
@@ -15,7 +14,15 @@ Currently, the primary use case is the ATC button on the new Advisor's page.
 
 ## Running demo
 
-`npm test`
+Begin by executing `npm test` from the root of the repo
+
+Then,
+* open Chrome to `http://localhost:1000/demo.html`
+
+Alternatively,
+* edit your `/etc/hosts` to add an entry like `127.0.0.1 consultations.glgroup.com`
+* then open Chrome to `http://consultations.glgroup.com:1000/demo.html`
+* (This ensures that [glg-currrent-user](https://github.com/Custom-Elements/glg-current-user) can read your cookies.)
 
 ## To Do
 * Use dbSockets to add Mosaic Lists as an option under "project type" - which
