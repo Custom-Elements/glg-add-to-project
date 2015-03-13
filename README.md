@@ -39,7 +39,6 @@ Alternatively,
   should probably be renamed now. Stakeholder: Ariela Rosenberg
 * Persist HB indexes with lastUpdate datetime to local storage for faster subsequent loading
 * Get designer feedback on GUI style
-* Dump ui-toolkit in favor of slimmer, barebones necessities
 
 
 ## Attributes

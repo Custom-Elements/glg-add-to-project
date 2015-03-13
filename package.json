@@ -1,20 +1,11 @@
 {
   "name": "glg-add-to-project",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "dependencies": {
     "epiquery2": "git://github.com/wballard/epiquery2#master",
     "glg-current-user": "git://github.com/custom-elements/glg-current-user#master",
-    "glg-nectar": "git://github.com/custom-elements/glg-nectar#2.0.2",
     "hummingbird": "~2.0.2",
     "polymer-serve": "git://github.com/custom-elements/polymer-serve#master",
-    "ui-attention": "git://github.com/custom-elements/ui-attention#master",
-    "ui-button": "git://github.com/custom-elements/ui-button#master",
-    "ui-check": "git://github.com/custom-elements/ui-check#master",
-    "ui-fonts": "git://github.com/custom-elements/ui-fonts#master",
-    "ui-form": "git://github.com/custom-elements/ui-form#master",
-    "ui-pages": "git://github.com/custom-elements/ui-pages#master",
-    "ui-styles": "git://github.com/custom-elements/ui-styles#master",
-    "ui-typeahead": "git://github.com/custom-elements/ui-typeahead#1.0.0",
     "webcomponents": "git://github.com/custom-elements/webcomponentsjs#master"
   },
   "license": "ISC",
