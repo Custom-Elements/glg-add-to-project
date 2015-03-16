@@ -1,0 +1,37 @@
+<!doctype html>
+
+<html>
+  <head>
+    <title>glg-add-to-project</title>
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="https://services.glgresearch.com/ui-toolkit/polymer.html">
+    <link rel="import" href="src/glg-add-to-project.html">
+    <style>
+      body {
+        font-family: "Helvetica Neue", "Helvetica", "Arial";
+        color: #454545;
+      }
+    </style>
+  </head>
+  <body container unresolved>
+    <glg-add-to-project id="atp"></glg-add-to-project>
+  </body>
+  <script>
+    document.addEventListener('polymer-ready', function() {
+      // replace add-to-project attrs with values from querystring where available
+      var atp = document.querySelector('glg-add-to-project');
+      var qs = location.search.slice(1).split('&');
+      var qparams = {};
+      qs.forEach(function(item){
+        var p = item.split('=')
+        qparams[p[0]] = p[1];
+      });
+      if (typeof qparams['cmIds'] !== 'undefined') {
+        atp.setAttribute('cmIds', qparams['cmIds']);
+      }
+      if (typeof qparams['appName'] !== 'undefined') {
+        atp.setAttribute('appName', qparams['appName']);
+      }
+    });
+  </script>
+</html>
