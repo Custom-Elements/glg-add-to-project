@@ -24,17 +24,17 @@ The IDs of council members to be added to the selected project
 The name to use to identify the application or feature used in ATC for tracking dashboard purposes
 
 #### hideUI
-Toggles whether to display a UI at all.  If not included, it is displayed.
+Toggles whether to display a UI at all.  If not included or false, it is displayed.
 If included as an attribute on the element, the component is available as an invisible service.
 
 #### hideOwnerFilter
-Toggles whether to display the project owner filter in the UI.  If not included, it is displayed.
+Toggles whether to display the project owner filter in the UI.  If not included or false, it is displayed.
 
 #### hideProjType
-Toggles whether to display the project type filter in the UI.  If not included, it is displayed.
+Toggles whether to display the project type filter in the UI.  If not included or false, it is displayed.
 
 #### hideExperts
-Toggles whether to display the Council Members to-be-added in the UI.  If not included, it is displayed.
+Toggles whether to display the Council Members to-be-added in the UI.  If not included or false, it is displayed.
 
 #### rmPersonId
 The person ID of the RM taking the ATC action on these experts on this selected project
@@ -58,13 +58,44 @@ Collection of hummingbird indexes, one per type of project entity
           councilMemberIds: newVal.split ','
         @postToEpiquery uri, post, 15*1000
         .then undefined, (err) =>
-          console.error "cmIdsChanged but failed to fetch details: #{err}"
+          console.error "glg-atp: cmIdsChanged but failed to fetch details: #{err}"
           Promise.reject()
         .then (messages) =>
           @councilMembers[cmData.councilMemberId] = cmData for cmData in messages
           @councilMemberNames = messages.map (cmData, i, messages) ->
             cmData.firstName + ' ' + cmData.lastName
           @councilMembersStr = @councilMemberNames.join ', '
+
+#### hideUIChanged
+
+      hideUIChanged: (oldVal, newVal) ->
+        if @hideUI? and @hideUI is 'true'
+          @$.inputwrapper.setAttribute 'hidden', true
+          @$.experts.setAttribute 'hidden', true
+        else
+          @$.inputwrapper.removeAttribute 'hidden'
+
+#### hideOwnerFilterChanged
+
+      hideOwnerFilterChanged: (oldVal, newVal) ->
+        if @hideOwnerFilter? and @hideOwnerFilter is 'true'
+          @$.selectProjOwner.setAttribute 'hidden', true
+          @$.filterPipe.setAttribute 'hidden', true if @hideProjType? and @hideProjType is 'true'
+
+#### hideProjTypeChanged
+
+      hideProjTypeChanged: (oldVal, newVal) ->
+        if @hideProjType? and @hideProjType is 'true'
+          @$.selectProjType.setAttribute 'hidden', true
+          @$.filterPipe.setAttribute 'hidden', true if @hideOwnerFilter? and @hideOwnerFilter is 'true'
+
+#### hideExpertsChanged
+
+      hideExpertsChanged: (oldVal, newVal) ->
+        if @hideExperts? and @hideExperts is 'true'
+          @$.experts.setAttribute 'hidden', true
+
+
 
 ### Events
 #### atp-ready
@@ -148,19 +179,18 @@ Builds a hummingbird index with the list of projects returned by core-ajax call 
         promisesArray.push @postToEpiquery(myConsultsUri, post, timeout, buildHbIndex 'consults')
         promisesArray.push @postToEpiquery(mySurveysUri, post, timeout, buildHbIndex 'surveys')
         promisesArray.push @postToEpiquery(myMeetingsUri, post, timeout, buildHbIndex 'meetings')
-        console.debug "Promise.all fired"
+        console.debug "glg-atp: Promise.all fired"
         Promise.all promisesArray
         .then undefined, (err) =>
-          console.warn "Failed to build hb indexes: #{err}"
+          console.warn "glg-atp: Failed to build hb indexes: #{err}"
           Promise.reject()
         .then () =>
           for entity in Object.keys @hb
-            console.debug "hummingbird #{entity}: #{Object.keys(@hb[entity].metaStore.root).length} items"
+            console.debug "glg-atp: hummingbird #{entity}: #{Object.keys(@hb[entity].metaStore.root).length} items"
           @$.hbfetching.setAttribute 'hidden', true
           @$.inputwrapper.removeAttribute 'hidden' unless @hideUI
           @$.inputwrapper.focus() unless @hideUI
-          @fire 'add-to-project-ready'
-          console.log "fired 'atp-ready'"
+          @fire 'atp-ready'
 
 #### displayResults
 Used by displayNectarResults and directly as a callback passed to hummingbird index queries.
@@ -201,7 +231,6 @@ Does the attaching of council member(s) to the selected project
           entity: entity
           projectId: selectedProject.id
           cmIds: @cmIds.split ','
-        console.log "fired 'atp-started'"
 
         track = (app=@appName, projId=selectedProject.id, cmIds=@cmIds, rmId=@rmPersonId, action='add') =>
           # tracking is intended to be fire-and-forget
@@ -216,14 +245,14 @@ Does the attaching of council member(s) to the selected project
         uri = ""
         switch entity
           when 'consults'
-            console.info "consult selected #{selectedProject.name} (#{selectedProject.id})"
+            console.debug "glg-atp: consult selected #{selectedProject.name} (#{selectedProject.id})"
             postData =
               consultationId: selectedProject.id
               councilMembers: {id: id} for id in @cmIds.split ','
               userPersonId: @rmPersonId
             uri = "consultations/new/attachParticipants.mustache"
           when 'surveys'
-            console.info "survey selected name: #{selectedProject.name}, id: #{selectedProject.id}, type: #{selectedProject.type}"
+            console.debug "glg-atp: survey selected name: #{selectedProject.name}, id: #{selectedProject.id}, type: #{selectedProject.type}"
             if selectedProject.type is 'Surveys 3.0'
               postData =
                 surveyId: selectedProject.id
@@ -237,17 +266,17 @@ Does the attaching of council member(s) to the selected project
                 rmPersonId: @rmPersonId
               uri = "survey/attachCMToSurvey20.mustache"
             else
-              console.error "unknown survey type: #{selectedProject.type}"
+              console.error "glg-atp: unknown survey type: #{selectedProject.type}"
               return
           when 'meetings' # aka, events, visits
-            console.info "meeting selected #{selectedProject.name} (#{selectedProject.id})"
+            console.debug "glg-atp: meeting selected #{selectedProject.name} (#{selectedProject.id})"
             postData =
               MeetingId: selectedProject.id
               PersonIds: {PersonId: @councilMembers[id].personId} for id in @cmIds.split ','
               LastUpdatedBy: @rmPersonId
             uri = "Event/attachCouncilMember.mustache"
           else
-            console.error "unknown entity type: #{entity}"
+            console.error "glg-atp: unknown entity type: #{entity}"
             return
         @postToEpiquery uri, postData, 3*60*1000
         .then undefined, (err) =>
@@ -256,28 +285,25 @@ Does the attaching of council member(s) to the selected project
             projectId: selectedProject.id
             cmIds: @cmIds.split ','
             error: err
-          console.log "fired 'atp-failed': #{err}"
           Promise.reject()
         .then (messages) =>
           @fire 'atp-succeeded',
             entity: entity
             projectId: selectedProject.id
             cmIds: @cmIds.split ','
-          console.log "fired 'atp-succeeded'"
           track() if entity is 'consults' # currently, we only track adds to consults
 
 ### Polymer Lifecycle
 
       created: ->
         @hideUI = false
+        @hideOwnerFilter = false
+        @hideProjType = false
+        @hideExperts = false
 
       ready: ->
         @$.inputwrapper.setAttribute 'unresolved', ''
-        @$.hbfetching.setAttribute 'hidden', 'true' if @hideUI
-        @$.selectProjOwner.setAttribute 'hidden', true if @hideOwnerFilter or @hideUI
-        @$.selectProjType.setAttribute 'hidden', true if @hideProjType or @hideUI
-        @$.filterPipe.setAttribute 'hidden', true if @hideProjType or @hideOwnerFilter or @hideUI
-        @$.experts.setAttribute 'hidden', true if @hideExperts or @hideUI
+        @$.hbfetching.setAttribute 'hidden', 'true' if @hideUI? and @hideUI is 'true'
         @councilMemberNames = []
         @councilMembers = {} # key=cmId
         @councilMembersStr = "none chosen"

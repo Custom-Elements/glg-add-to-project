@@ -5,6 +5,7 @@
     <title>glg-add-to-project</title>
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="https://services.glgresearch.com/ui-toolkit/polymer.html">
+    <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-toast/src/ui-toast.html">
     <link rel="import" href="src/glg-add-to-project.html">
     <style>
       body {
@@ -14,12 +15,6 @@
     </style>
   </head>
   <body container unresolved>
-    <!-- hardcoded values for published attrs just for demo purposes -->
-    <!-- good test URL = http://consultations.glgroup.com:10000/demo.html?cmIds=301363 -->
-    <!-- 301363 => cmId of Joseph Wong, HD -->
-    <!-- 881448 => rmPersonId of Amanda Markert, Boston RM -->
-    <!-- 826777 => rmPersonId of Catherine Butterworth, Events Planner -->
-    <!-- 167551 => rmPersonId of Mukesh Chaudhary, RM -->
     <h1 style="text-align: left">Add to Project demo</h1>
     <glg-add-to-project
       id="atp"
@@ -27,13 +22,25 @@
       style="width: 25rem;"
     >
     </glg-add-to-project>
+    <ui-toast id="success">Expert(s) successfully attached</ui-toast>
+    <ui-toast id="fail">Failed to attach experts</ui-toast>
   </body>
   <script>
+    var atp = document.querySelector('glg-add-to-project');
+    var success = document.querySelector('ui-toast#success');
+    var failure = document.querySelector('ui-toast#fail');
+    var qs = location.search.slice(1).split('&');
+    var qparams = {};
+    document.addEventListener('atp-succeeded', function() {
+      success.show();
+      failure.hide();
+    });
+    document.addEventListener('atp-failed', function() {
+      failure.show();
+      success.hide();
+    });
     document.addEventListener('polymer-ready', function() {
       // replace add-to-project attrs with values from querystring where available
-      var atp = document.querySelector('glg-add-to-project');
-      var qs = location.search.slice(1).split('&');
-      var qparams = {};
       qs.forEach(function(item){
         var p = item.split('=')
         qparams[p[0]] = p[1];
