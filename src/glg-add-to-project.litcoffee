@@ -9,7 +9,7 @@ survey, or various types of in-person meetings.
       secondarySortOrder: 'desc'
       howMany: 10
     epiquery2 = require 'epiquery2'
-    epiUrlTemplate = "glgresearch.com/epistream-consultations-clustered/sockjs/websocket"
+    epiUrlTemplate = "glgresearch.com/epi-streaming/sockjs/websocket"
     #episervers = ("wss://#{region}.#{epiUrlTemplate}" for region in ['services','asia','east','europe','west'])
     episervers = "wss://services.#{epiUrlTemplate}"
     epi = new epiquery2.EpiClient episervers
@@ -69,7 +69,7 @@ Collection of hummingbird indexes, one per type of project entity
 #### hideUIChanged
 
       hideUIChanged: (oldVal, newVal) ->
-        if @hideUI? and @hideUI is 'true'
+        if @hideUI? and (@hideUI is 'true' or @hideUI is true)
           @$.inputwrapper.setAttribute 'hidden', true
           @$.experts.setAttribute 'hidden', true
         else
@@ -78,24 +78,26 @@ Collection of hummingbird indexes, one per type of project entity
 #### hideOwnerFilterChanged
 
       hideOwnerFilterChanged: (oldVal, newVal) ->
-        if @hideOwnerFilter? and @hideOwnerFilter is 'true'
+        if @hideOwnerFilter? and (@hideOwnerFilter is 'true' or @hideOwnerFilter is true)
           @$.selectProjOwner.setAttribute 'hidden', true
-          @$.filterPipe.setAttribute 'hidden', true if @hideProjType? and @hideProjType is 'true'
+          @$.filterPipe.setAttribute 'hidden', true if @hideProjType? and (@hideProjType is 'true' or @hideProjType is true)
 
 #### hideProjTypeChanged
 
       hideProjTypeChanged: (oldVal, newVal) ->
-        if @hideProjType? and @hideProjType is 'true'
+        if @hideProjType? and (@hideProjType is 'true' or @hideProjType is true)
           @$.selectProjType.setAttribute 'hidden', true
-          @$.filterPipe.setAttribute 'hidden', true if @hideOwnerFilter? and @hideOwnerFilter is 'true'
+          @$.filterPipe.setAttribute 'hidden', true if @hideOwnerFilter? and (@hideOwnerFilter is 'true' or @hideOwnerFilter is true)
 
 #### hideExpertsChanged
 
       hideExpertsChanged: (oldVal, newVal) ->
-        if @hideExperts? and @hideExperts is 'true'
+        if @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
           @$.experts.setAttribute 'hidden', true
 
-
+      #TODO: IFF the use case presents itself, don't speculate extra work
+      #      create change handlers for projType and projOwner
+      #      check for existence of @query then executes search()
 
 ### Events
 #### atp-ready
@@ -114,10 +116,18 @@ fired after failing to add an expert to a project
 #### filtersUpdated
 Executes a new search when a different type of project is selected
 
+      # While .innerText strips markup, it is style dependent.  It ignores hidden text.
+      # Use .textContent and avoid putting markup in the filter labels.  May also provide performance advantage
       filtersUpdated: (evt, detail, sender) ->
         # don't search until we're ready
         if detail.isSelected and @$.nectar? and @hb?
-          @$.nectar.entities = detail.item.textContent if detail.item.parentElement.id is 'selectProjType'
+          if detail.item.parentElement.id is 'selectProjType'
+            @projType = detail.item.textContent
+          else
+            @projOwner = detail.item.textContent
+          @$.nectar.entities = @projType if detail.item.parentElement.id is 'selectProjType'
+          #TODO: IFF the use case presents itself, don't speculate extra work
+          #      Don't search here, let attribute change handlers do that?
           @search()
 
 #### queryUpdated
@@ -210,7 +220,7 @@ Primary function for retrieving typeahead results from either hummingbird or nec
 
       search: () ->
         if @query? and @$.selectProjOwner?.selectedItem? and @$.selectProjType?.selectedItem?
-          if @$.selectProjOwner.selectedItem.innerText is 'mine'
+          if @$.selectProjOwner.selectedItem.id is 'mine'
             if isNaN(@query)
               @hb[@$.nectar.entities].search @query, @displayResults(@), hbOptions
             else
@@ -226,7 +236,7 @@ Does the attaching of council member(s) to the selected project
 
       selectProject: () ->
         selectedProject = @$.projects.value
-        entity = @$.selectProjType.selectedItem.innerText
+        entity = @$.selectProjType.selectedItem.textContent # avoid .innerText
         @fire 'atp-started',
           entity: entity
           projectId: selectedProject.id
@@ -303,7 +313,7 @@ Does the attaching of council member(s) to the selected project
 
       ready: ->
         @$.inputwrapper.setAttribute 'unresolved', ''
-        @$.hbfetching.setAttribute 'hidden', 'true' if @hideUI? and @hideUI is 'true'
+        @$.hbfetching.setAttribute 'hidden', 'true' if @hideUI? and (@hideUI is 'true' or @hideUI is true)
         @councilMemberNames = []
         @councilMembers = {} # key=cmId
         @councilMembersStr = "none chosen"

@@ -8,6 +8,17 @@
     <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-toast/src/ui-toast.html">
     <link rel="import" href="src/glg-add-to-project.html">
     <style>
+      ui-toast::shadow section#backdrop {
+        top: 0;
+        right: auto;
+        left: 50%;
+        bottom: auto;
+        margin-left: -5%;
+      }
+      ui-toast::shadow section#backdrop.fadeout {
+        transform: translate3d(0, -100%, 0) !important;
+        -webkit-transform: translate3d(0, -100%, 0) !important;
+      }
       body {
         font-family: "Helvetica Neue", "Helvetica", "Arial";
         color: #454545;
@@ -22,8 +33,8 @@
       style="width: 25rem;"
     >
     </glg-add-to-project>
-    <ui-toast id="success">Expert(s) successfully attached</ui-toast>
-    <ui-toast id="fail">Failed to attach experts</ui-toast>
+    <ui-toast timeout="2000" id="success">Expert(s) successfully attached</ui-toast>
+    <ui-toast timeout="2000" id="fail">Failed to attach experts</ui-toast>
   </body>
   <script>
     var atp = document.querySelector('glg-add-to-project');

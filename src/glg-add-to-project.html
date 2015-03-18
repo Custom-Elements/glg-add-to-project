@@ -2,7 +2,7 @@
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-typeahead/src/ui-typeahead.html">
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-current-user/src/glg-current-user.html">
 <link rel="import" href="../bower_components/core-selector/core-selector.html">
-<polymer-element name="glg-add-to-project" attributes="cmIds appName hideUI hideOwnerFilter hideProjType hideExperts rmPersonId"
+<polymer-element name="glg-add-to-project" attributes="cmIds appName hideUI hideOwnerFilter hideProjType hideExperts rmPersonId projType projOwner"
   on-core-select="{{filtersUpdated}}"
   on-inputchange="{{queryUpdated}}"
   on-user="{{getMyProjects}}"
@@ -33,8 +33,8 @@
       <div id="projowner">
         <span>
           <core-selector id="selectProjOwner" multi="false" class="options" selected="0">
-            <span>mine</span>
-            <span>anyone</span>
+            <span id="mine">my</span>
+            <span id="any">all</span>
           <core-selector>
         </span>
         <span id="filterPipe" style="font-size: 1rem; font-weight:bold; color:lightgrey;">|</span>
@@ -49,7 +49,7 @@
       <ui-typeahead
           id="projects"
           sticky
-         placeholder="Find a project by name..."
+          placeholder="Search {{projOwner}} {{projType}}..."
           debounce="50">
         <template id="projectMatches" repeat="{{matches}}">
           <ui-typeahead-item>

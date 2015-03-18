@@ -1,6 +1,6 @@
 {
   "name": "glg-add-to-project",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "dependencies": {
     "epiquery2": "git://github.com/wballard/epiquery2#master",
     "hummingbird": "~2.0.2",
