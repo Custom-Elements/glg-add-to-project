@@ -71,9 +71,15 @@ Collection of hummingbird indexes, one per type of project entity
       hideUIChanged: (oldVal, newVal) ->
         if @hideUI? and (@hideUI is 'true' or @hideUI is true)
           @$.inputwrapper.setAttribute 'hidden', true
+          @$.atppromptwithexperts.setAttribute 'hidden', true if @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
+          @$.atppromptwithoutexperts.setAttribute 'hidden', true unless @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
           @$.experts.setAttribute 'hidden', true
         else
           @$.inputwrapper.removeAttribute 'hidden'
+          @$.atppromptwithexperts.removeAttribute 'hidden' unless @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
+          @$.atppromptwithoutexperts.removeAttribute 'hidden' if @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
+          @$.experts.removeAttribute 'hidden'
+          @$.inputwrapper.focus()
 
 #### hideOwnerFilterChanged
 
@@ -198,8 +204,11 @@ Builds a hummingbird index with the list of projects returned by core-ajax call 
           for entity in Object.keys @hb
             console.debug "glg-atp: hummingbird #{entity}: #{Object.keys(@hb[entity].metaStore.root).length} items"
           @$.hbfetching.setAttribute 'hidden', true
-          @$.inputwrapper.removeAttribute 'hidden' unless @hideUI
-          @$.inputwrapper.focus() unless @hideUI
+          unless @hideUI? and (@hideUI is 'true' or @hideUI is true)
+            @$.atppromptwithexperts.removeAttribute 'hidden' unless @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
+            @$.atppromptwithoutexperts.removeAttribute 'hidden' if @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
+            @$.inputwrapper.removeAttribute 'hidden' unless @hideUI
+            @$.inputwrapper.focus() unless @hideUI
           @fire 'atp-ready'
 
 #### displayResults

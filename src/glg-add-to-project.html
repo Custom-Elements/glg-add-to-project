@@ -24,21 +24,19 @@
       secondarySortOrder="desc"
       >
     </glg-nectar>
-    <div id="experts" class="to-be-added">
-      <span style="font-weight:bold;padding-right:1rem;">Attaching:</span>
-      <span id="toBeAdded">{{councilMembersStr}}</span>
-    </div>
     <icon spinner id="hbfetching" class="progress"></icon>
     <div id="inputwrapper" hidden=true>
-      <div id="projowner">
-        <span>
+      <div id="atppromptwithoutexperts" hidden=true>Attach To:</div>
+      <div id="atppromptwithexperts" hidden=true>Attach {{councilMembersStr}} to:</div>
+      <div id="filters">
+        <span id="projowner">
           <core-selector id="selectProjOwner" multi="false" class="options" selected="0">
             <span id="mine">my</span>
             <span id="any">all</span>
           <core-selector>
         </span>
-        <span id="filterPipe" style="font-size: 1rem; font-weight:bold; color:lightgrey;">|</span>
-        <span>
+        <span id="filterPipe">|</span>
+        <span id="projtype">
           <core-selector id="selectProjType" multi="false" class="options" selected="0">
             <span>consults</span>
             <span>surveys</span>
