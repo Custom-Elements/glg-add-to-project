@@ -8,7 +8,7 @@ Details](https://services.glgresearch.com/advisors/#/cm/3938) page.
 
 ## Developing
 
-`git clone git@github.com/Custom-Elements/glg-add-to-project.git`
+`git clone git@github.com:Custom-Elements/glg-add-to-project.git`
 
 `npm install`
 
