@@ -9,7 +9,7 @@ survey, or various types of in-person meetings.
       secondarySortOrder: 'desc'
       howMany: 10
     epiquery2 = require 'epiquery2'
-    epiUrlTemplate = "glgresearch.com/epi-streaming/sockjs/websocket"
+    epiUrlTemplate = "glgresearch.com/epistream/sockjs/websocket"
     #episervers = ("wss://#{region}.#{epiUrlTemplate}" for region in ['services','asia','east','europe','west'])
     episervers = "wss://services.#{epiUrlTemplate}"
     epi = new epiquery2.EpiClient episervers
