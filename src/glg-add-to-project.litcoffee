@@ -63,8 +63,8 @@ Collection of hummingbird indexes, one per type of project entity
         meetings: new hummingbird
         surveys: new hummingbird
 
-      epi:
-        new epiquery2.EpiClient @epiStreamUrl
+#### epi
+Epiquery2 client for fetching remote data over websockets
 
 ## Attribute Change Handlers
 #### cmIdsChanged
@@ -167,21 +167,21 @@ Posts a payload to epiquery, then either executes the supplied callback on the r
         new Promise (resolve,reject) =>
           qid = Math.random()
           msgArray = []
-          epi.on 'endrowset', (msg) =>
+          @epi.on 'endrowset', (msg) =>
             if qid is msg.queryId
               if cb?
                 resolve()
               else
                 resolve msgArray
-          epi.on 'row', (msg) =>
+          @epi.on 'row', (msg) =>
             if qid is msg.queryId
               if cb?
                 cb msg.columns
               else
                 msgArray.push msg.columns
-          epi.on 'error', (msg) =>
+          @epi.on 'error', (msg) =>
             reject new Error "postToEpiquery failed: #{msg.error}"
-          epi.query 'glglive_o', uri, post, qid
+          @epi.query 'glglive_o', uri, post, qid
 
 #### getMyProjects
 Fetch of names of projects created in the last 90 days
@@ -343,11 +343,12 @@ Does the attaching of council member(s) to the selected project
         @councilMemberNames = []
         @councilMembers = {} # key=cmId
         @councilMembersStr = "none chosen"
-
-      attached: ->
         console.error "glg-atp: epiStreamUrl is not properly defined" unless @epiStreamUrl? and @epiStreamUrl.length > 1
         console.error "glg-atp: trackUrl is not properly defined" unless @trackUrl? and @trackUrl.length > 1
         console.error "glg-atp: nectarUrl is not properly defined" unless @nectarUrl? and @nectarUrl.length > 1
+        @epi = new epiquery2.EpiClient @epiStreamUrl
+
+      attached: ->
 
       domReady: ->
 
