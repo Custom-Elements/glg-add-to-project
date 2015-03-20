@@ -90,12 +90,10 @@ Epiquery2 client for fetching remote data over websockets
           @$.inputwrapper.setAttribute 'hidden', true
           @$.atppromptwithexperts.setAttribute 'hidden', true if @hideExperts is 'true' or @hideExperts is true
           @$.atppromptwithoutexperts.setAttribute 'hidden', true unless @hideExperts is 'true' or @hideExperts is true
-          @$.experts.setAttribute 'hidden', true
         else
           @$.inputwrapper.removeAttribute 'hidden'
           @$.atppromptwithexperts.removeAttribute 'hidden' unless @hideExperts is 'true' or @hideExperts is true
           @$.atppromptwithoutexperts.removeAttribute 'hidden' if @hideExperts is 'true' or @hideExperts is true
-          @$.experts.removeAttribute 'hidden'
           @$.inputwrapper.focus()
 
 #### hideOwnerFilterChanged
@@ -116,7 +114,11 @@ Epiquery2 client for fetching remote data over websockets
 
       hideExpertsChanged: (oldVal, newVal) ->
         if @hideExperts is 'true' or @hideExperts is true
-          @$.experts.setAttribute 'hidden', true
+          @$.atppromptwithexperts.setAttribute 'hidden', true
+          @$.atppromptwithoutexperts.removeAttribute 'hidden'
+        else
+          @$.atppromptwithexperts.removeAttribute 'hidden'
+          @$.atppromptwithoutexperts.setAttribute 'hidden', true
 
       #TODO: IFF the use case presents itself, don't speculate extra work
       #      create change handlers for projType and projOwner
