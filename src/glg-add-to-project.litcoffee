@@ -9,19 +9,15 @@ survey, or various types of in-person meetings.
       secondarySortOrder: 'desc'
       howMany: 10
     epiquery2 = require 'epiquery2'
-    epiUrlTemplate = "glgresearch.com/epistream/sockjs/websocket"
-    #episervers = ("wss://#{region}.#{epiUrlTemplate}" for region in ['services','asia','east','europe','west'])
-    episervers = "wss://services.#{epiUrlTemplate}"
-    epi = new epiquery2.EpiClient episervers
 
     Polymer 'glg-add-to-project',
 
-### Attributes
+## Attributes
 #### cmIds
-The IDs of council members to be added to the selected project
+The IDs of council members to be added to the selected project.  Expected to be a comma separated string of ints.  Defaults to `null`.
 
 #### appName
-The name to use to identify the application or feature used in ATC for tracking dashboard purposes
+The name to use to identify the application or feature used in ATC for tracking dashboard purposes.  By default, this is set to `unknown`.
 
 #### hideUI
 Toggles whether to display a UI at all.  If not included or false, it is displayed.
@@ -37,9 +33,28 @@ Toggles whether to display the project type filter in the UI.  If not included o
 Toggles whether to display the Council Members to-be-added in the UI.  If not included or false, it is displayed.
 
 #### rmPersonId
-The person ID of the RM taking the ATC action on these experts on this selected project
+The person ID of the RM taking the ATC action on these experts on this
+selected project.  By default, this is extracted from the `glg-current-user`
+component.
 
-### Globals
+#### trackUrl
+URL to the tracking service REST endpoint.  Expected to include the
+http/https protocal and include the trailing slash but not the data
+bits.  E.g., `trackUrl="https://tracking.glgroup.com/track/"`
+**(required)**
+
+#### epiStreamUrl
+URL to the Epiquery2 web socket endpoint.  Expected to include the
+websocket protocol.  E.g.,
+`epiStreamUrl="wss://epistream.mydomain.com/sockjs/websocket"`
+**(required)**
+
+#### nectarUrl
+URL to the nectar web socket endpoint.  Expected to include the
+websocket protocol.  E.g., `nectarUrl="ws://nectar.glgroup.com/ws"`
+**(required)**
+
+## Globals
 #### hb
 Collection of hummingbird indexes, one per type of project entity
 
@@ -48,8 +63,10 @@ Collection of hummingbird indexes, one per type of project entity
         meetings: new hummingbird
         surveys: new hummingbird
 
+#### epi
+Epiquery2 client for fetching remote data over websockets
 
-### Attribute Change Handlers
+## Attribute Change Handlers
 #### cmIdsChanged
 
       cmIdsChanged: (oldVal, newVal) ->
@@ -71,9 +88,15 @@ Collection of hummingbird indexes, one per type of project entity
       hideUIChanged: (oldVal, newVal) ->
         if @hideUI? and (@hideUI is 'true' or @hideUI is true)
           @$.inputwrapper.setAttribute 'hidden', true
+          @$.atppromptwithexperts.setAttribute 'hidden', true if @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
+          @$.atppromptwithoutexperts.setAttribute 'hidden', true unless @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
           @$.experts.setAttribute 'hidden', true
         else
           @$.inputwrapper.removeAttribute 'hidden'
+          @$.atppromptwithexperts.removeAttribute 'hidden' unless @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
+          @$.atppromptwithoutexperts.removeAttribute 'hidden' if @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
+          @$.experts.removeAttribute 'hidden'
+          @$.inputwrapper.focus()
 
 #### hideOwnerFilterChanged
 
@@ -99,7 +122,7 @@ Collection of hummingbird indexes, one per type of project entity
       #      create change handlers for projType and projOwner
       #      check for existence of @query then executes search()
 
-### Events
+## Events
 #### atp-ready
 fired as soon as hummingbird indexes are built and available for searching
 
@@ -112,7 +135,7 @@ fired after an expert was successfully added to a project
 #### atp-failed
 fired after failing to add an expert to a project
 
-### Methods
+## Methods
 #### filtersUpdated
 Executes a new search when a different type of project is selected
 
@@ -144,21 +167,21 @@ Posts a payload to epiquery, then either executes the supplied callback on the r
         new Promise (resolve,reject) =>
           qid = Math.random()
           msgArray = []
-          epi.on 'endrowset', (msg) =>
+          @epi.on 'endrowset', (msg) =>
             if qid is msg.queryId
               if cb?
                 resolve()
               else
                 resolve msgArray
-          epi.on 'row', (msg) =>
+          @epi.on 'row', (msg) =>
             if qid is msg.queryId
               if cb?
                 cb msg.columns
               else
                 msgArray.push msg.columns
-          epi.on 'error', (msg) =>
+          @epi.on 'error', (msg) =>
             reject new Error "postToEpiquery failed: #{msg.error}"
-          epi.query 'glglive_o', uri, post, qid
+          @epi.query 'glglive_o', uri, post, qid
 
 #### getMyProjects
 Fetch of names of projects created in the last 90 days
@@ -168,7 +191,7 @@ where this user was either primary or delegate RM or recruiter
         @rmPersonId = @rmPersonId ? currentuser?.detail?.personId
 
 ##### buildHbIndex
-Builds a hummingbird index with the list of projects returned by core-ajax call to epiquery
+Builds a hummingbird index with the list of projects returned by call to epiquery
 
         buildHbIndex = (entity) =>
           (data) =>
@@ -198,8 +221,11 @@ Builds a hummingbird index with the list of projects returned by core-ajax call 
           for entity in Object.keys @hb
             console.debug "glg-atp: hummingbird #{entity}: #{Object.keys(@hb[entity].metaStore.root).length} items"
           @$.hbfetching.setAttribute 'hidden', true
-          @$.inputwrapper.removeAttribute 'hidden' unless @hideUI
-          @$.inputwrapper.focus() unless @hideUI
+          unless @hideUI? and (@hideUI is 'true' or @hideUI is true)
+            @$.atppromptwithexperts.removeAttribute 'hidden' unless @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
+            @$.atppromptwithoutexperts.removeAttribute 'hidden' if @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
+            @$.inputwrapper.removeAttribute 'hidden' unless @hideUI
+            @$.inputwrapper.focus() unless @hideUI
           @fire 'atp-ready'
 
 #### displayResults
@@ -245,8 +271,8 @@ Does the attaching of council member(s) to the selected project
         track = (app=@appName, projId=selectedProject.id, cmIds=@cmIds, rmId=@rmPersonId, action='add') =>
           # tracking is intended to be fire-and-forget
           async = true
-          url = "//services.glgresearch.com/trackingexpress/"
-          url += "track/appName/#{app}/action/#{action}/personId/#{rmId}/consultationId/#{projId}/cmIds/[#{cmIds.split ','}]"
+          app ?= 'unknown'
+          url = "#{@trackUrl}track/appName/#{app}/action/#{action}/personId/#{rmId}/consultationId/#{projId}/cmIds/[#{cmIds.split ','}]"
           request = new XMLHttpRequest
           request.withCredentials = true
           request.open 'GET', url, async
@@ -303,7 +329,7 @@ Does the attaching of council member(s) to the selected project
             cmIds: @cmIds.split ','
           track() if entity is 'consults' # currently, we only track adds to consults
 
-### Polymer Lifecycle
+## Polymer Lifecycle
 
       created: ->
         @hideUI = false
@@ -317,6 +343,10 @@ Does the attaching of council member(s) to the selected project
         @councilMemberNames = []
         @councilMembers = {} # key=cmId
         @councilMembersStr = "none chosen"
+        console.error "glg-atp: epiStreamUrl is not properly defined" unless @epiStreamUrl? and @epiStreamUrl.length > 1
+        console.error "glg-atp: trackUrl is not properly defined" unless @trackUrl? and @trackUrl.length > 1
+        console.error "glg-atp: nectarUrl is not properly defined" unless @nectarUrl? and @nectarUrl.length > 1
+        @epi = new epiquery2.EpiClient @epiStreamUrl
 
       attached: ->
 

@@ -1,8 +1,11 @@
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-nectar/src/glg-nectar.html">
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-typeahead/src/ui-typeahead.html">
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-current-user/src/glg-current-user.html">
+<link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-fonts/fonts.html">
 <link rel="import" href="../bower_components/core-selector/core-selector.html">
-<polymer-element name="glg-add-to-project" attributes="cmIds appName hideUI hideOwnerFilter hideProjType hideExperts rmPersonId projType projOwner"
+<link rel="stylesheet" type="text/css" href="./glg-add-to-project.less" shim-shadowdom>
+<polymer-element name="glg-add-to-project"
+  attributes="cmIds appName hideUI hideOwnerFilter hideProjType hideExperts rmPersonId projType projOwner trackUrl epiStreamUrl nectarUrl"
   on-core-select="{{filtersUpdated}}"
   on-inputchange="{{queryUpdated}}"
   on-user="{{getMyProjects}}"
@@ -14,8 +17,7 @@
     <glg-current-user id="atpuser" username="{{username}}"></glg-current-user>
     <glg-nectar
       id="nectar"
-      urls="wss://nectar.glgroup.com/ws"
-      entities="consults"
+      urls="{{nectarUrl}}"
       appName={{appName}}
       interleave="true"
       scoreThreshold="0.5"
@@ -24,21 +26,19 @@
       secondarySortOrder="desc"
       >
     </glg-nectar>
-    <div id="experts" class="to-be-added">
-      <span style="font-weight:bold;padding-right:1rem;">Attaching:</span>
-      <span id="toBeAdded">{{councilMembersStr}}</span>
-    </div>
     <icon spinner id="hbfetching" class="progress"></icon>
     <div id="inputwrapper" hidden=true>
-      <div id="projowner">
-        <span>
+      <div id="atppromptwithoutexperts" hidden=true>Attach To:</div>
+      <div id="atppromptwithexperts" hidden=true>Attach {{councilMembersStr}} to:</div>
+      <div id="filters">
+        <span id="projowner">
           <core-selector id="selectProjOwner" multi="false" class="options" selected="0">
             <span id="mine">my</span>
             <span id="any">all</span>
           <core-selector>
         </span>
-        <span id="filterPipe" style="font-size: 1rem; font-weight:bold; color:lightgrey;">|</span>
-        <span>
+        <span id="filterPipe">|</span>
+        <span id="projtype">
           <core-selector id="selectProjType" multi="false" class="options" selected="0">
             <span>consults</span>
             <span>surveys</span>
