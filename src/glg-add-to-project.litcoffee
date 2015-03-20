@@ -86,36 +86,36 @@ Epiquery2 client for fetching remote data over websockets
 #### hideUIChanged
 
       hideUIChanged: (oldVal, newVal) ->
-        if @hideUI? and (@hideUI is 'true' or @hideUI is true)
+        if @hideUI is 'true' or @hideUI is true
           @$.inputwrapper.setAttribute 'hidden', true
-          @$.atppromptwithexperts.setAttribute 'hidden', true if @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
-          @$.atppromptwithoutexperts.setAttribute 'hidden', true unless @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
+          @$.atppromptwithexperts.setAttribute 'hidden', true if @hideExperts is 'true' or @hideExperts is true
+          @$.atppromptwithoutexperts.setAttribute 'hidden', true unless @hideExperts is 'true' or @hideExperts is true
           @$.experts.setAttribute 'hidden', true
         else
           @$.inputwrapper.removeAttribute 'hidden'
-          @$.atppromptwithexperts.removeAttribute 'hidden' unless @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
-          @$.atppromptwithoutexperts.removeAttribute 'hidden' if @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
+          @$.atppromptwithexperts.removeAttribute 'hidden' unless @hideExperts is 'true' or @hideExperts is true
+          @$.atppromptwithoutexperts.removeAttribute 'hidden' if @hideExperts is 'true' or @hideExperts is true
           @$.experts.removeAttribute 'hidden'
           @$.inputwrapper.focus()
 
 #### hideOwnerFilterChanged
 
       hideOwnerFilterChanged: (oldVal, newVal) ->
-        if @hideOwnerFilter? and (@hideOwnerFilter is 'true' or @hideOwnerFilter is true)
+        if @hideOwnerFilter is 'true' or @hideOwnerFilter is true
           @$.selectProjOwner.setAttribute 'hidden', true
-          @$.filterPipe.setAttribute 'hidden', true if @hideProjType? and (@hideProjType is 'true' or @hideProjType is true)
+          @$.filterPipe.setAttribute 'hidden', true if @hideProjType is 'true' or @hideProjType is true
 
 #### hideProjTypeChanged
 
       hideProjTypeChanged: (oldVal, newVal) ->
-        if @hideProjType? and (@hideProjType is 'true' or @hideProjType is true)
+        if @hideProjType is 'true' or @hideProjType is true
           @$.selectProjType.setAttribute 'hidden', true
-          @$.filterPipe.setAttribute 'hidden', true if @hideOwnerFilter? and (@hideOwnerFilter is 'true' or @hideOwnerFilter is true)
+          @$.filterPipe.setAttribute 'hidden', true if @hideOwnerFilter is 'true' or @hideOwnerFilter is true
 
 #### hideExpertsChanged
 
       hideExpertsChanged: (oldVal, newVal) ->
-        if @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
+        if @hideExperts is 'true' or @hideExperts is true
           @$.experts.setAttribute 'hidden', true
 
       #TODO: IFF the use case presents itself, don't speculate extra work
@@ -221,9 +221,9 @@ Builds a hummingbird index with the list of projects returned by call to epiquer
           for entity in Object.keys @hb
             console.debug "glg-atp: hummingbird #{entity}: #{Object.keys(@hb[entity].metaStore.root).length} items"
           @$.hbfetching.setAttribute 'hidden', true
-          unless @hideUI? and (@hideUI is 'true' or @hideUI is true)
-            @$.atppromptwithexperts.removeAttribute 'hidden' unless @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
-            @$.atppromptwithoutexperts.removeAttribute 'hidden' if @hideExperts? and (@hideExperts is 'true' or @hideExperts is true)
+          unless @hideUI is 'true' or @hideUI is true
+            @$.atppromptwithexperts.removeAttribute 'hidden' unless @hideExperts is 'true' or @hideExperts is true
+            @$.atppromptwithoutexperts.removeAttribute 'hidden' if @hideExperts is 'true' or @hideExperts is true
             @$.inputwrapper.removeAttribute 'hidden' unless @hideUI
             @$.inputwrapper.focus() unless @hideUI
           @fire 'atp-ready'
@@ -339,7 +339,7 @@ Does the attaching of council member(s) to the selected project
 
       ready: ->
         @$.inputwrapper.setAttribute 'unresolved', ''
-        @$.hbfetching.setAttribute 'hidden', 'true' if @hideUI? and (@hideUI is 'true' or @hideUI is true)
+        @$.hbfetching.setAttribute 'hidden', 'true' if @hideUI is 'true' or @hideUI is true
         @councilMemberNames = []
         @councilMembers = {} # key=cmId
         @councilMembersStr = "none chosen"

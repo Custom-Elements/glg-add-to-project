@@ -7,12 +7,18 @@
   -webkit-flex-display: flex;
   -moz-flex-display: flex;
   -o-flex-display: flex;
+  display: flex;
   justify-content: center;
   text-rendering: optimizeLegibility !important;
   -webkit-font-smoothing: antialiased !important;
 
+  // global vars
+  @lgfont: 1.2rem;
+  @mdfont: 0.9rem;
+  @smfont: 0.7rem;
+
   #projowner, #projtype /deep/ {
-    font-size: 0.9rem;
+    font-size: @mdfont;
   }
 
   ui-typeahead {
@@ -21,13 +27,13 @@
   }
 
   .proj-name{
-    font-size: 0.9rem;
+    font-size: @mdfont;
     color: #000;
   }
 
   .proj-meta {
     color: #555;
-    font-size: 0.7rem;
+    font-size: @smfont;
     margin-left: 1rem;
   }
 
@@ -36,19 +42,13 @@
     padding: 0 0.5rem 0 0.5rem;
   }
 
-  .options > span {
-    margin-left: 0.25rem;
-    margin-right: 0.25rem;
-    cursor: pointer;
-  }
-
   #filters {
     margin-left: 0.25rem;
     margin-bottom: 0.5rem;
   }
 
   #filterPipe {
-    font-size: 1.2rem;
+    font-size: @lgfont;
     color:#999;
   }
 
@@ -58,17 +58,6 @@
     margin-bottom: 0.5rem;
   }
 
-  .options > *.core-selected {
-    border-bottom-color: #666;
-    border-bottom-width: 0.15rem;
-    border-bottom-style: solid;
-  }
-
-  .to-be-added {
-    padding: 0.5rem 0.5rem;
-    font-size: 0.8rem;
-  }
-
   #inputwrapper {
     border-width: thin;
     border-color: lightgrey;
@@ -76,6 +65,35 @@
     border-radius: 0.50rem;
     padding: 0.75rem 0.50rem;
     margin: 0.25rem 0.25rem;
+  }
+
+  .options > span {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+    cursor: pointer;
+  }
+
+  .options > *.core-selected {
+    border-bottom-color: #666;
+    border-bottom-width: 0.15rem;
+    border-bottom-style: solid;
+  }
+
+  .progress {
+    font-size: 2.5rem;
+    margin-top: 1rem;
+    width: 100%;
+    left: 50%;
+    -webkit-animation: spin 2.5s infinite linear;
+    -moz-animation: spin 2.5s infinite linear;
+    -o-animation: spin 2.5s infinite linear;
+    animation: spin 2.5s infinite linear;
+  }
+
+  .ico-add {
+    font-size: @smfont;
+    color: #CCC;
+    vertical-align: bottom;
   }
 
   @-webkit-keyframes spin {
@@ -100,23 +118,6 @@
     to {
       transform: rotate(1turn);
     }
-  }
-
-  .progress {
-    font-size: 2.5rem;
-    margin-top: 1rem;
-    width: 100%;
-    left: 50%;
-    -webkit-animation: spin 2.5s infinite linear;
-    -moz-animation: spin 2.5s infinite linear;
-    -o-animation: spin 2.5s infinite linear;
-    animation: spin 2.5s infinite linear;
-  }
-
-  .ico-add {
-    font-size: 0.7rem;
-    color: #CCC;
-    vertical-align: bottom;
   }
 
 }
