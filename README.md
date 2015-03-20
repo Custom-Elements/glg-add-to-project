@@ -15,13 +15,15 @@ Details](https://services.glgresearch.com/advisors/#/cm/3938) page.
 ## Running demo
 
 ```
-    BEWARE:
+    GLGers BEWARE:
 
     As is, if you use the demo to attach a CM to a project, it will,
     no-foolin', attach real CMs to real projects in
     the real production database.  Clean-up after yourself!
 
     i.e., unattach said CMs from said project via the web UI.
+
+    (non-GLG'ers can ignore this warning, since you will/can not be authenticated.)
 ```
 
 ### locally
