@@ -5,8 +5,20 @@
     <title>glg-add-to-project</title>
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="https://services.glgresearch.com/ui-toolkit/polymer.html">
+    <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-toast/src/ui-toast.html">
     <link rel="import" href="src/glg-add-to-project.html">
     <style>
+      ui-toast::shadow section#backdrop {
+        top: 0;
+        right: auto;
+        left: 50%;
+        bottom: auto;
+        margin-left: -5%;
+      }
+      ui-toast::shadow section#backdrop.fadeout {
+        transform: translate3d(0, -100%, 0) !important;
+        -webkit-transform: translate3d(0, -100%, 0) !important;
+      }
       body {
         font-family: "Helvetica Neue", "Helvetica", "Arial";
         color: #454545;
@@ -14,14 +26,30 @@
     </style>
   </head>
   <body container unresolved>
-    <glg-add-to-project id="atp"></glg-add-to-project>
+    <glg-add-to-project id="atp"
+      trackUrl="https://services.glgresearch.com/trackingexpress/"
+      epiStreamUrl="wss://services.glgresearch.com/epistream/sockjs/websocket"
+      nectarUrl="wss://nectar.glgroup.com/ws"
+    ></glg-add-to-project>
+    <ui-toast id="success">Expert(s) successfully attached</ui-toast>
+    <ui-toast id="fail">Failed to attach experts</ui-toast>
   </body>
   <script>
+    var atp = document.querySelector('glg-add-to-project');
+    var success = document.querySelector('ui-toast#success');
+    var failure = document.querySelector('ui-toast#fail');
+    var qs = location.search.slice(1).split('&');
+    var qparams = {};
+    document.addEventListener('atp-succeeded', function() {
+      success.show();
+      failure.hide();
+    });
+    document.addEventListener('atp-failed', function() {
+      failure.show();
+      success.hide();
+    });
     document.addEventListener('polymer-ready', function() {
       // replace add-to-project attrs with values from querystring where available
-      var atp = document.querySelector('glg-add-to-project');
-      var qs = location.search.slice(1).split('&');
-      var qparams = {};
       qs.forEach(function(item){
         var p = item.split('=')
         qparams[p[0]] = p[1];
