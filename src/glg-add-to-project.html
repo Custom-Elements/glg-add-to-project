@@ -6,7 +6,6 @@
 <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less" shim-shadowdom>
 <polymer-element name="glg-add-to-project"
   attributes="cmIds appName hideUI hideOwnerFilter hideProjType hideExperts rmPersonId projType projOwner trackUrl epiStreamUrl nectarUrl"
-  on-core-select="{{filtersUpdated}}"
   on-inputchange="{{queryUpdated}}"
   on-user="{{getMyProjects}}"
   on-results="{{displayNectarResults}}"
@@ -32,14 +31,14 @@
       <div id="atppromptwithexperts" hidden=true>Attach {{councilMembersStr}} to:</div>
       <div id="filters">
         <span id="projowner">
-          <core-selector id="selectProjOwner" multi="false" class="options" selected="0">
+          <core-selector id="selectProjOwner" multi="false" class="options" selected="0" on-core-select="{{projOwnerUpdated}}">
             <span id="mine">my</span>
             <span id="any">all</span>
           <core-selector>
         </span>
         <span id="filterPipe">|</span>
         <span id="projtype">
-          <core-selector id="selectProjType" multi="false" class="options" selected="0">
+          <core-selector id="selectProjType" multi="false" class="options" selected="0" on-core-select="{{projTypeUpdated}}">
             <span>consults</span>
             <span>surveys</span>
             <span>meetings</span>

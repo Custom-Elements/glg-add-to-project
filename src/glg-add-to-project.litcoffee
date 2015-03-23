@@ -138,19 +138,37 @@ fired after an expert was successfully added to a project
 fired after failing to add an expert to a project
 
 ## Methods
-#### filtersUpdated
-Executes a new search when a different type of project is selected
+#### resetDefaults
+Sets input text and filters back to default values
+
+      resetDefaults: () ->
+        @query = @$.projects.text = ""
+        @$.selectProjOwner.shadowRoot.querySelector('core-selection').select(@$.mine)
+        @$.selectProjType.shadowRoot.querySelector('core-selection').select(@$.consults)
+
+#### projOwnerUpdated
+Executes a new search when a different owner of project is selected
 
       # While .innerText strips markup, it is style dependent.  It ignores hidden text.
       # Use .textContent and avoid putting markup in the filter labels.  May also provide performance advantage
-      filtersUpdated: (evt, detail, sender) ->
+      projOwnerUpdated: (evt, detail, sender) ->
         # don't search until we're ready
         if detail.isSelected and @$.nectar? and @hb?
-          if detail.item.parentElement.id is 'selectProjType'
-            @projType = detail.item.textContent
-          else
-            @projOwner = detail.item.textContent
-          @$.nectar.entities = @projType if detail.item.parentElement.id is 'selectProjType'
+          @projOwner = detail.item.textContent
+          #TODO: IFF the use case presents itself, don't speculate extra work
+          #      Don't search here, let attribute change handlers do that?
+          @search()
+
+#### projTypeUpdated
+Executes a new search when a different owner of project is selected
+
+      # While .innerText strips markup, it is style dependent.  It ignores hidden text.
+      # Use .textContent and avoid putting markup in the filter labels.  May also provide performance advantage
+      projTypeUpdated: (evt, detail, sender) ->
+        # don't search until we're ready
+        if detail.isSelected and @$.nectar? and @hb?
+          @projType = detail.item.textContent
+          @$.nectar.entities = @projType
           #TODO: IFF the use case presents itself, don't speculate extra work
           #      Don't search here, let attribute change handlers do that?
           @search()
