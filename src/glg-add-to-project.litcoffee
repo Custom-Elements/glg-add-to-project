@@ -160,7 +160,7 @@ Executes a new search when a different owner of project is selected
           @search()
 
 #### projTypeUpdated
-Executes a new search when a different owner of project is selected
+Executes a new search when a different project type is selected
 
       # While .innerText strips markup, it is style dependent.  It ignores hidden text.
       # Use .textContent and avoid putting markup in the filter labels.  May also provide performance advantage
