@@ -7,16 +7,42 @@
     <link rel="import" href="https://services.glgresearch.com/ui-toolkit/polymer.html">
     <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-toast/src/ui-toast.html">
     <link rel="import" href="src/glg-add-to-project.html">
-    <style>
+    <style>    
+      .title {
+        font-size: 2.5em;
+        margin-top: 0.3em;
+        margin-bottom: 0.3em;
+        margin-left: 0.2em;
+      }
+      .app-title {
+        font-weight: 500;
+        margin-bottom: 0.2em;
+      }
+      .glg-divider {
+        letter-spacing: -0.2em;
+        color: rgb(238,45,25);
+      }
+      .special-glg {
+        letter-spacing: -0.08em;
+      }
+      #page-title {
+        font-size: 1.25em;
+        margin-left: 0.5em;
+        margin-top: 1.25em;
+        margin-bottom: 0.25em;
+      }
+      glg-add-to-project {
+        max-width: 45em;
+      }
+      
       glg-add-to-project::shadow #atppromptwithexperts {
-        font-weight: 600;
-        margin-bottom: 1.0rem;
+        display: none;
       }
       glg-add-to-project::shadow #projowner, glg-add-to-project::shadow #projtype {
         font-size: 1.0rem;
       }
       glg-add-to-project::shadow #inputwrapper {
-        border-style: none;
+        background-color: #F5F5F5;
       }
       ui-toast::shadow section#backdrop {
         top: 0;
@@ -32,10 +58,18 @@
       body {
         font-family: "Helvetica Neue", "Helvetica", "Arial";
         color: #454545;
+        margin: 2.0rem 0rem 0rem 2.0rem;
+        
       }
     </style>
   </head>
   <body container unresolved>
+    <div class="title">
+      <strong><span class="special-glg">GLG</span></strong>
+      <span class="glg-divider">/</span>
+      <span class="glg-siteName">Add to Project</span>
+    </div>
+    <div id='page-title'>Add Camille Abboud to</div>
     <glg-add-to-project id="atp"
       trackUrl="https://services.glgresearch.com/trackingexpress/"
       epiStreamUrl="wss://services.glgresearch.com/epistream/sockjs/websocket"
@@ -70,6 +104,15 @@
       if (typeof qparams['appName'] !== 'undefined') {
         atp.setAttribute('appName', qparams['appName']);
       }
+      
     });
+    
+    document.addEventListener('atp-ready', function() {
+      // Extract page title and show outside custom element
+      var atpShadow = document.querySelector('glg-add-to-project').shadowRoot;
+      var titleText = atpShadow.querySelector('#atppromptwithexperts').innerHTML;
+      //document.querySelector('#page-title').innerHTML = titleText;
+    });
+    
   </script>
 </html>
