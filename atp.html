@@ -7,7 +7,7 @@
     <link rel="import" href="https://services.glgresearch.com/ui-toolkit/polymer.html">
     <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-toast/src/ui-toast.html">
     <link rel="import" href="src/glg-add-to-project.html">
-    <style>    
+    <style>
       .title {
         font-size: 2.5em;
         margin-top: 0.3em;
@@ -34,7 +34,7 @@
       glg-add-to-project {
         max-width: 45em;
       }
-      
+
       glg-add-to-project::shadow #atppromptwithexperts {
         display: none;
       }
@@ -59,7 +59,7 @@
         font-family: "Helvetica Neue", "Helvetica", "Arial";
         color: #454545;
         margin: 2.0rem 0rem 0rem 2.0rem;
-        
+
       }
     </style>
   </head>
@@ -67,9 +67,9 @@
     <div class="title">
       <strong><span class="special-glg">GLG</span></strong>
       <span class="glg-divider">/</span>
-      <span class="glg-siteName">Add to Project</span>
+      <span class="glg-siteName">Attach Expert</span>
     </div>
-    <div id='page-title'>Add Camille Abboud to</div>
+    <div id='page-title'></div>
     <glg-add-to-project id="atp"
       trackUrl="https://services.glgresearch.com/trackingexpress/"
       epiStreamUrl="wss://services.glgresearch.com/epistream/sockjs/websocket"
@@ -104,15 +104,15 @@
       if (typeof qparams['appName'] !== 'undefined') {
         atp.setAttribute('appName', qparams['appName']);
       }
-      
+
     });
-    
+
     document.addEventListener('atp-ready', function() {
       // Extract page title and show outside custom element
       var atpShadow = document.querySelector('glg-add-to-project').shadowRoot;
       var titleText = atpShadow.querySelector('#atppromptwithexperts').innerHTML;
-      //document.querySelector('#page-title').innerHTML = titleText;
+      document.querySelector('#page-title').innerHTML = titleText;
     });
-    
+
   </script>
 </html>
