@@ -2,9 +2,9 @@
   "name": "glg-add-to-project",
   "version": "0.3.6",
   "dependencies": {
-    "epiquery2": "git://github.com/wballard/epiquery2#master",
+    "epiquery2": "^0.3.0",
     "hummingbird": "~2.0.2",
-    "polymer-serve": "git://github.com/custom-elements/polymer-serve#master",
+    "polymer-serve": "^0.0.30",
     "webcomponents": "git://github.com/custom-elements/webcomponentsjs#master"
   },
   "license": "ISC",
