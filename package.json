@@ -3,7 +3,7 @@
   "version": "0.3.7",
   "dependencies": {
     "epiquery2": "^0.4.0",
-    "bower": "^1.3.12",
+    "bower": "^1.4.0",
     "hummingbird": "~2.0.2",
     "polymer-serve": "^0.0.30"
   },
