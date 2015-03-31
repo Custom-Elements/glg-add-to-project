@@ -11,5 +11,9 @@
   "scripts": {
     "postinstall": "bower install",
     "test": "polymer-serve ./"
+  },
+  "engines": {
+    "npm" : "2.5.1",
+    "node": "0.12.1"
   }
 }
