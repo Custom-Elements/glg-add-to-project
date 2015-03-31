@@ -1,11 +1,11 @@
 {
   "name": "glg-add-to-project",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "dependencies": {
-    "epiquery2": "^0.3.0",
+    "epiquery2": "^0.4.0",
+    "bower": "^1.3.12",
     "hummingbird": "~2.0.2",
-    "polymer-serve": "^0.0.30",
-    "webcomponents": "git://github.com/custom-elements/webcomponentsjs#master"
+    "polymer-serve": "^0.0.30"
   },
   "license": "ISC",
   "scripts": {

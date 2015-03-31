@@ -1,6 +1,7 @@
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-nectar/src/glg-nectar.html">
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-typeahead/src/ui-typeahead.html">
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-current-user/src/glg-current-user.html">
+<link rel="import" href="../node_modules/glg-current-user/src/glg-current-user.html">
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-fonts/fonts.html">
 <link rel="import" href="../bower_components/core-selector/core-selector.html">
 <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less" shim-shadowdom>
@@ -56,7 +57,8 @@
               <span class="ico-add"><icon plus></icon></span>
               <span>{{name}}</span>
               <div class="proj-meta">
-                <span>{{createDate | date}} </span>
+                <!-- <span>{{createDate | date}} </span> -->
+                <span>{{createDate}} </span>
                 <span class="proj-meta-important"> {{firm || client || type}}</span>
               </div>
             </div>
