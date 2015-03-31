@@ -2,6 +2,7 @@
   "name": "glg-add-to-project",
   "version": "0.3.6",
   "dependencies": {
+    "bower": "^1.4.0",
     "epiquery2": "^0.3.0",
     "hummingbird": "~2.0.2",
     "polymer-serve": "^0.0.30",
