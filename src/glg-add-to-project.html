@@ -1,13 +1,13 @@
-<link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-nectar/src/glg-nectar.html">
-<link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-typeahead/src/ui-typeahead.html">
-<link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-current-user/src/glg-current-user.html">
+<link rel="import" href="../node_modules/glg-nectar/src/glg-nectar.html">
+<link rel="import" href="../node_modules/ui-typeahead/src/ui-typeahead.html">
+<link rel="import" href="../node_modules/glg-current-user/src/glg-current-user.html">
 <link rel="import" href="../node_modules/ui-fonts/fonts.html">
 <polymer-element name="glg-add-to-project"
-  attributes="targetType"
+  attributes="target"
   on-inputchange="{{queryUpdated}}"
   on-user="{{buildIndex}}"
   on-results="{{displayNectarResults}}"
-  on-itemselected="{{selectProject}}"
+  on-itemselected="{{selectTarget}}"
   >
   <template>
     <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less">
@@ -23,27 +23,25 @@
       secondarySortOrder="desc"
       >
     </glg-nectar>
-    <select on-change="{{targetTypeSelected}}">
-      <option value="consults" selected>Consults</option>
-      <option value="surveys">Surveys</option>
-      <option value="meetings">Meetings</option>
-      <option value="lists">Lists</option>
-    </select>
     <ui-typeahead
-        id="projects"
+        id="targets"
         sticky
-        placeholder="Search {{targetType}} ..."
+        placeholder="Search ... "
         debounce="50">
-       <icon search></icon>
-      <template id="projectMatches" repeat="{{matches}}">
-        <ui-typeahead-item>
-          <div class="proj-name">
-            <span class="ico-add"><icon plus></icon></span>
+      <icon search></icon>
+      <template value>
+        <value>
+          <div class="name">
             <span>{{name}}</span>
-            <div class="proj-meta">
-              <span>{{createDate}} </span>
-              <span class="proj-meta-important"> {{firm || client || type}}</span>
-            </div>
+            <span class="meta">{{created | formatDate}}</span>
+          </div>
+        </value>
+      </template>
+      <template id="matches" repeat="{{matches}}">
+        <ui-typeahead-item>
+          <div class="name">
+            <span>{{name}}</span>
+            <span class="meta">{{created | formatDate}}</span>
           </div>
         </ui-typeahead-item>
       </template>

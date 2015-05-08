@@ -2,20 +2,22 @@
   "name": "glg-add-to-project",
   "version": "0.3.7",
   "dependencies": {
+    "ui-typeahead": "git://github.com/custom-elements/ui-typeahead",
+    "glg-current-user": "git://github.com/custom-elements/glg-current-user",
+    "glg-nectar": "git://github.com/custom-elements/glg-nectar",
     "epiquery2": "^0.4.0",
-    "bower": "^1.4.0",
     "hummingbird": "~2.0.2",
+    "moment": "^2.10.2",
     "polymer-serve": "^0.0.30",
     "ui-fonts": "^0.0.1"
   },
   "license": "ISC",
   "scripts": {
-    "postinstall": "bower install",
     "start": "polymer-serve --cache .",
     "test": "polymer-serve ./"
   },
   "engines": {
-    "npm" : "2.5.1",
+    "npm": "2.5.1",
     "node": "0.12.1"
   }
 }
