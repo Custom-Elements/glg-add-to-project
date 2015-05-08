@@ -5,7 +5,8 @@
     "epiquery2": "^0.4.0",
     "bower": "^1.4.0",
     "hummingbird": "~2.0.2",
-    "polymer-serve": "^0.0.30"
+    "polymer-serve": "^0.0.30",
+    "ui-fonts": "^0.0.1"
   },
   "license": "ISC",
   "scripts": {

@@ -1,19 +1,17 @@
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-nectar/src/glg-nectar.html">
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-typeahead/src/ui-typeahead.html">
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-current-user/src/glg-current-user.html">
-<link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-fonts/fonts.html">
-<link rel="import" href="../bower_components/core-selector/core-selector.html">
-<link rel="stylesheet" type="text/css" href="./glg-add-to-project.less" shim-shadowdom>
+<link rel="import" href="../node_modules/ui-fonts/fonts.html">
 <polymer-element name="glg-add-to-project"
-  attributes="cmIds appName hideUI hideOwnerFilter hideProjType hideExperts rmPersonId projType projOwner trackUrl epiStreamUrl nectarUrl"
+  attributes="targetType"
   on-inputchange="{{queryUpdated}}"
-  on-user="{{getMyProjects}}"
+  on-user="{{buildIndex}}"
   on-results="{{displayNectarResults}}"
   on-itemselected="{{selectProject}}"
   >
   <template>
-    <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less" shim-shadowdom>
-    <glg-current-user id="atpuser" username="{{username}}"></glg-current-user>
+    <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less">
+    <glg-current-user></glg-current-user>
     <glg-nectar
       id="nectar"
       urls="{{nectarUrl}}"
@@ -25,48 +23,31 @@
       secondarySortOrder="desc"
       >
     </glg-nectar>
-    <icon spinner id="hbfetching" class="progress"></icon>
-    <div id="inputwrapper" hidden=true>
-      <div id="atppromptwithoutexperts" hidden=true>Attach to</div>
-      <div id="atppromptwithexperts" hidden=true>Attach {{councilMembersStr}} to</div>
-      <div id="filters">
-        <span id="projowner">
-          <core-selector id="selectProjOwner" multi="false" class="options" selected="0" on-core-select="{{projOwnerUpdated}}">
-            <span id="mine">my</span>
-            <span id="any">all</span>
-          <core-selector>
-        </span>
-        <span id="filterPipe">|</span>
-        <span id="projtype">
-          <core-selector id="selectProjType" multi="false" class="options" selected="0" on-core-select="{{projTypeUpdated}}">
-            <span id="consults">consults</span>
-            <span id="surveys">surveys</span>
-            <span id="meetings">meetings</span>
-          <core-selector>
-        </span>
-      </div>
-      <ui-typeahead
-          id="projects"
-          sticky
-          placeholder="Search {{projOwner}} {{projType}}..."
-          debounce="50">
-        <template id="projectMatches" repeat="{{matches}}">
-          <ui-typeahead-item>
-            <div class="proj-name">
-              <span class="ico-add"><icon plus></icon></span>
-              <span>{{name}}</span>
-              <div class="proj-meta">
-                <!-- <span>{{createDate | date}} </span> -->
-                <span>{{createDate}} </span>
-                <span class="proj-meta-important"> {{firm || client || type}}</span>
-              </div>
+    <select on-change="{{targetTypeSelected}}">
+      <option value="consults" selected>Consults</option>
+      <option value="surveys">Surveys</option>
+      <option value="meetings">Meetings</option>
+      <option value="lists">Lists</option>
+    </select>
+    <ui-typeahead
+        id="projects"
+        sticky
+        placeholder="Search {{targetType}} ..."
+        debounce="50">
+       <icon search></icon>
+      <template id="projectMatches" repeat="{{matches}}">
+        <ui-typeahead-item>
+          <div class="proj-name">
+            <span class="ico-add"><icon plus></icon></span>
+            <span>{{name}}</span>
+            <div class="proj-meta">
+              <span>{{createDate}} </span>
+              <span class="proj-meta-important"> {{firm || client || type}}</span>
             </div>
-          </ui-typeahead-item>
-        </template>
-      </ui-typeahead>
-      <icon search></icon>
-    </div>
+          </div>
+        </ui-typeahead-item>
+      </template>
+    </ui-typeahead>
   </template>
-  <script src="../bower_components/polymer-filters/filter-date.js"></script>
   <script src="./glg-add-to-project.litcoffee"></script>
 </polymer-element>

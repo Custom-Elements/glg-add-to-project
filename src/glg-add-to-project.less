@@ -1,54 +1,26 @@
+@import "../node_modules/ui-styles/variables";
+@import "../node_modules/ui-styles/visual-elements";
+@import "../node_modules/ui-fonts/node_modules/ui-font-awesome/font-awesome-icons";
 :host {
-  @import "https://services.glgresearch.com/ui-toolkit/node_modules/ui-styles/variables";
-  @import "https://services.glgresearch.com/ui-toolkit/node_modules/ui-styles/visual-elements";
-  @import "https://services.glgresearch.com/ui-toolkit/node_modules/ui-styles/typography";
-  @import "https://services.glgresearch.com/ui-toolkit/node_modules/ui-fonts/node_modules/ui-font-awesome/font-awesome-icons";
-  -webkit-flex-display: flex;
-  -moz-flex-display: flex;
-  -o-flex-display: flex;
   display: flex;
   justify-content: center;
-  text-rendering: optimizeLegibility !important;
-  -webkit-font-smoothing: antialiased !important;
-
-  // global vars
-  @lgfont: 1.2rem;
-  @mdfont: 0.9rem;
-  @smfont: 0.7rem;
-
-  #projowner, #projtype /deep/ {
-    font-size: @mdfont;
-  }
 
   ui-typeahead {
-    margin: 0.5rem 0 0 0.5rem;
-    width: 90%;
+    flex: 1;
   }
 
   .proj-name{
-    font-size: @mdfont;
-    color: #000;
+    color: @black;
   }
 
   .proj-meta {
-    color: #555;
-    font-size: @smfont;
+    color: @red;
     margin-left: 1rem;
   }
 
   .proj-meta-important {
     font-weight: 400;
     padding: 0 0.5rem 0 0.5rem;
-  }
-
-  #filters {
-    margin-left: 0.25rem;
-    margin-bottom: 0.5rem;
-  }
-
-  #filterPipe {
-    font-size: @lgfont;
-    color:#999;
   }
 
   #atppromptwithoutexperts, #atppromptwithexperts {
@@ -79,45 +51,8 @@
     border-bottom-style: solid;
   }
 
-  .progress {
-    font-size: 2.5rem;
-    margin-top: 1rem;
-    width: 100%;
-    left: 50%;
-    -webkit-animation: spin 2.5s infinite linear;
-    -moz-animation: spin 2.5s infinite linear;
-    -o-animation: spin 2.5s infinite linear;
-    animation: spin 2.5s infinite linear;
-  }
-
   .ico-add {
-    font-size: @smfont;
     color: #CCC;
     vertical-align: bottom;
   }
-
-  @-webkit-keyframes spin {
-    to {
-      transform: rotate(1turn);
-    }
-  }
-
-  @-moz-keyframes spin {
-    to {
-      transform: rotate(1turn);
-    }
-  }
-
-  @-o-keyframes spin {
-    to {
-      transform: rotate(1turn);
-    }
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(1turn);
-    }
-  }
-
 }
