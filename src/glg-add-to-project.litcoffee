@@ -10,6 +10,7 @@ survey, or various types of in-person meetings.
       secondarySortOrder: 'desc'
       howMany: 10
     epiquery2 = require 'epiquery2'
+    timeout = 1*60*1000
 
     PolymerExpressions::formatDate = (d) ->
       moment(d).format('L')
@@ -56,13 +57,13 @@ Builds a hummingbird index with the list of projects returned by call to epiquer
       buildIndex: (evt, user, source) ->
         # lastUpdate must be seconds since epoch for sql server
         # chosen to round off lastUpdate to the nearest day-ish
-        timeout = 3*60*1000 # 3 min timeout
         post =
           userId: user.userId
           personId: user.personId
         @postToEpiquery("glgCurrentUser/getAddTargets.mustache", post, timeout)
           .then (data) =>
             data.forEach (doc) =>
+              console.log doc
               @localIndex.add doc
             @search()
 
@@ -74,13 +75,49 @@ Primary function for retrieving typeahead results from either hummingbird or nec
           @$.matches.model = {matches: results}
         , hbOptions
 
+#### getAttachedCouncilMembers
+Load up all attached council members on to the selected target.
+
+      getAttachedCouncilMembers: () ->
+        if @target
+          flavor = @target.id.split(':')[0]
+          switch flavor
+            when 'consultation'
+              url = "consultations/getConsultationParticipantsCMIds.mustache"
+              parameters =
+                consultationId: @target.sourceid
+            when 'meeting'
+              url = "Event/getCouncilMembers.mustache"
+              parameters =
+                meetingId: @target.sourceid
+            when 'survey2'
+              url = "survey/getSurvey2Participants.mustache"
+              parameters =
+                surveyId: @target.sourceid
+            when 'survey3'
+              url = "survey/getQualtricsParticipants.mustache"
+              parameters =
+                surveyId: @target.sourceid
+            when 'list'
+              url = "lists/getPeopleOnList.mustache"
+              parameters =
+                listId: @target.sourceid
+
+          @postToEpiquery(url, parameters, timeout)
+            .then (data) =>
+              @target.council_members = {}
+              data.forEach (doc) =>
+                @target.council_members[doc.COUNCIL_MEMBER_ID] = true
+                console.log doc
+              @fire 'change', @target
+
 #### selectProject
-Does the attaching of council member(s) to the selected project
+When a project is selected, bind it to an attribute. Then ask epiquery for the
+list of existing attached folks.
 
       selectTarget: () ->
         @target = @$.targets.value
-        console.log @target
-        @fire 'change', @target
+        @getAttachedCouncilMembers @target
 
         uri = ""
         switch entity
