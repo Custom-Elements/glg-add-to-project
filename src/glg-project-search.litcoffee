@@ -1,4 +1,4 @@
-# glg-add-to-project
+# glg-project-search
 A dialog to allow one or more CMs to be added to a consult,
 survey, or various types of in-person meetings.
 
@@ -15,7 +15,7 @@ survey, or various types of in-person meetings.
     PolymerExpressions::formatDate = (d) ->
       moment(d).format('L')
 
-    Polymer 'glg-add-to-project',
+    Polymer 'glg-project-search',
 
 ## Attributes
 

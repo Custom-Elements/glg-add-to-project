@@ -2,7 +2,7 @@
 <link rel="import" href="../node_modules/ui-typeahead/src/ui-typeahead.html">
 <link rel="import" href="../node_modules/glg-current-user/src/glg-current-user.html">
 <link rel="import" href="../node_modules/ui-fonts/fonts.html">
-<polymer-element name="glg-add-to-project"
+<polymer-element name="glg-project-search"
   attributes="target"
   on-inputchange="{{queryUpdated}}"
   on-user="{{buildIndex}}"
@@ -10,7 +10,7 @@
   on-itemselected="{{selectTarget}}"
   >
   <template>
-    <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less">
+    <link rel="stylesheet" type="text/css" href="./glg-project-search.less">
     <glg-current-user></glg-current-user>
     <glg-nectar
       id="nectar"
@@ -47,5 +47,5 @@
       </template>
     </ui-typeahead>
   </template>
-  <script src="./glg-add-to-project.litcoffee"></script>
+  <script src="./glg-project-search.litcoffee"></script>
 </polymer-element>

@@ -2,10 +2,10 @@
 
 <html>
   <head>
-    <title>glg-add-to-project</title>
+    <title>glg-project-search</title>
     <link rel="import" href="https://services.glgresearch.com/ui-toolkit/polymer.html">
     <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-toast/src/ui-toast.html">
-    <link rel="import" href="src/glg-add-to-project.html">
+    <link rel="import" href="src/glg-project-search.html">
     <style>
       ui-toast::shadow section#backdrop {
         top: 0;
@@ -26,17 +26,16 @@
   </head>
   <body container unresolved>
     <h1 style="text-align: left">Add to Project demo</h1>
-    <glg-add-to-project
+    <glg-project-search
       id="atp"
-      style="width: 75%;"
-    >
-    </glg-add-to-project>
+      style="width: 75%;">
+    </glg-project-search>
     <ui-toast timeout="2000" id="success">Expert(s) successfully attached</ui-toast>
     <ui-toast timeout="2000" id="fail">Failed to attach experts</ui-toast>
   </body>
   <script>
     window.debugUserName = 'wballard';
-    var atp = document.querySelector('glg-add-to-project');
+    var atp = document.querySelector('glg-project-search');
     var success = document.querySelector('ui-toast#success');
     var failure = document.querySelector('ui-toast#fail');
     var qs = location.search.slice(1).split('&');
@@ -50,7 +49,7 @@
       success.hide();
     });
     document.addEventListener('polymer-ready', function() {
-      // replace add-to-project attrs with values from querystring where available
+      // replace project-search attrs with values from querystring where available
       qs.forEach(function(item){
         var p = item.split('=')
         qparams[p[0]] = p[1];
