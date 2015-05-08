@@ -50,8 +50,8 @@
   <script>
     window.debugUserName = 'wballard';
     var projectSearch = document.querySelector('glg-project-search');
-    var success = document.querySelector('ui-toast#success');
-    var failure = document.querySelector('ui-toast#fail');
+    var success = document.getElementById('success');
+    var failure = document.getElementById('fail');
     var addButtons = document.getElementsByTagName('glg-add-to-project');
     var qs = location.search.slice(1).split('&');
     var qparams = {};

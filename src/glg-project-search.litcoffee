@@ -119,57 +119,6 @@ list of existing attached folks.
         @target = @$.targets.value
         @getAttachedCouncilMembers @target
 
-        uri = ""
-        switch entity
-          when 'consults'
-            console.debug "glg-atp: consult selected #{selectedProject.name} (#{selectedProject.id})"
-            postData =
-              consultationId: selectedProject.id
-              councilMembers: {id: id} for id in @cmIds.split ','
-              userPersonId: @rmPersonId
-            uri = "consultations/new/attachParticipants.mustache"
-          when 'surveys'
-            console.debug "glg-atp: survey selected name: #{selectedProject.name}, id: #{selectedProject.id}, type: #{selectedProject.type}"
-            if selectedProject.type is 'Surveys 3.0'
-              postData =
-                surveyId: selectedProject.id
-                personIds: @councilMembers[id].personId for id in @cmIds.split ','
-                rmPersonId: @rmPersonId
-              uri = "survey/qualtrics/attachCMToSurvey.mustache"
-            else if selectedProject.type is 'Surveys 2.0'
-              postData =
-                SurveyId: selectedProject.id
-                personIds: @councilMembers[id].personId for id in @cmIds.split ','
-                rmPersonId: @rmPersonId
-              uri = "survey/attachCMToSurvey20.mustache"
-            else
-              console.error "glg-atp: unknown survey type: #{selectedProject.type}"
-              return
-          when 'meetings' # aka, events, visits
-            console.debug "glg-atp: meeting selected #{selectedProject.name} (#{selectedProject.id})"
-            postData =
-              MeetingId: selectedProject.id
-              PersonIds: {PersonId: @councilMembers[id].personId} for id in @cmIds.split ','
-              LastUpdatedBy: @rmPersonId
-            uri = "Event/attachCouncilMember.mustache"
-          else
-            console.error "glg-atp: unknown entity type: #{entity}"
-            return
-        @postToEpiquery uri, postData, 3*60*1000
-        .then undefined, (err) =>
-          @fire 'atp-failed',
-            entity: entity
-            projectId: selectedProject.id
-            cmIds: @cmIds.split ','
-            error: err
-          Promise.reject()
-        .then (messages) =>
-          @fire 'atp-succeeded',
-            entity: entity
-            projectId: selectedProject.id
-            cmIds: @cmIds.split ','
-          track() if entity is 'consults' # currently, we only track adds to consults
-
 ## Polymer Lifecycle
 
       created: ->
