@@ -10,7 +10,8 @@
     "moment": "^2.10.2",
     "polymer-serve": "^0.0.30",
     "ui-fonts": "^0.0.1",
-    "ui-styles": "^0.0.0"
+    "ui-styles": "^0.0.0",
+    "ui-button": "git://github.com/custom-elements/ui-button"
   },
   "license": "ISC",
   "scripts": {

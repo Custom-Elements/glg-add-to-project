@@ -6,6 +6,7 @@
     <link rel="import" href="https://services.glgresearch.com/ui-toolkit/polymer.html">
     <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-toast/src/ui-toast.html">
     <link rel="import" href="src/glg-project-search.html">
+    <link rel="import" href="src/glg-add-to-project.html">
     <style>
       ui-toast::shadow section#backdrop {
         top: 0;
@@ -22,6 +23,10 @@
         font-family: "Helvetica Neue", "Helvetica", "Arial";
         color: #454545;
       }
+
+      .add-buttons li {
+        margin-top: 1em;
+      }
     </style>
   </head>
   <body container unresolved>
@@ -32,12 +37,22 @@
     </glg-project-search>
     <ui-toast timeout="2000" id="success">Expert(s) successfully attached</ui-toast>
     <ui-toast timeout="2000" id="fail">Failed to attach experts</ui-toast>
+    <ul class="add-buttons">
+      <li>
+        <glg-add-to-project cmId="582472"></glg-add-to-project> Will Ballard
+      </li>
+      <li>
+        <glg-add-to-project cmId="582473"></glg-add-to-project> Judy Irwin
+      </li>
+    </ul>
+
   </body>
   <script>
     window.debugUserName = 'wballard';
-    var atp = document.querySelector('glg-project-search');
+    var projectSearch = document.querySelector('glg-project-search');
     var success = document.querySelector('ui-toast#success');
     var failure = document.querySelector('ui-toast#fail');
+    var addButtons = document.getElementsByTagName('glg-add-to-project');
     var qs = location.search.slice(1).split('&');
     var qparams = {};
     document.addEventListener('atp-succeeded', function() {
@@ -55,10 +70,18 @@
         qparams[p[0]] = p[1];
       });
       if (typeof qparams['cmIds'] !== 'undefined') {
-        atp.setAttribute('cmIds', qparams['cmIds']);
+        projectSearch.setAttribute('cmIds', qparams['cmIds']);
       }
       if (typeof qparams['appName'] !== 'undefined') {
-        atp.setAttribute('appName', qparams['appName']);
+        projectSearch.setAttribute('appName', qparams['appName']);
+      }
+    });
+    projectSearch.addEventListener('change', function(e) {
+      if (e.target && e.target.target) {
+        Array.prototype.forEach.call(addButtons, function(button) {
+          // This line is hilarious.
+          button.target = e.target.target;
+        });
       }
     });
   </script>
