@@ -9,7 +9,8 @@
     "hummingbird": "~2.0.2",
     "moment": "^2.10.2",
     "polymer-serve": "^0.0.30",
-    "ui-fonts": "^0.0.1"
+    "ui-fonts": "^0.0.1",
+    "ui-styles": "^0.0.0"
   },
   "license": "ISC",
   "scripts": {
