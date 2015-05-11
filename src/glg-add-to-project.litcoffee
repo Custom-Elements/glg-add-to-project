@@ -14,7 +14,7 @@ show an attached label.
 
 Add the person specified by `cmId` to the target, if any. If no target, do nothing.
 
-      addPerson: ->
+      addPerson: (withPriority=false)->
         return if not @target
 
 What type of project are we adding to? What is its `id`? Once we have that,
@@ -27,33 +27,29 @@ figure out where we're posting the data and what the params should be.
             console.debug "glg-atp: consult #{id}"
             postData =
               consultationId: id
-              councilMembers: @cmId
               userPersonId: @currentuser.personId
-            uri = "consultations/new/attachParticipants.mustache"
-          when 'surveys'
+              councilMembers: [{id: @cmId}]
+              withPriority: withPriority
+            uri = "consultations/new/attachParticipants2.mustache"
+          when 'survey2'
             console.debug "glg-atp: survey #{id}"
-            # TODO: Differentiate surveys?
-            # if selectedProject.type is 'Surveys 3.0'
-            #   postData =
-            #     surveyId: id
-            #     # TODO: Need personId instead of cmId here?
-            #     personIds: @councilMembers[id].personId for id in @cmIds.split ','
-            #     rmPersonId: @currentuser.personId
-            #   uri = "survey/qualtrics/attachCMToSurvey.mustache"
-            # else if selectedProject.type is 'Surveys 2.0'
-            #   postData =
-            #     SurveyId: id
-            #     personIds: @councilMembers[id].personId for id in @cmIds.split ','
-            #     rmPersonId: @currentuser.personId
-            #   uri = "survey/attachCMToSurvey20.mustache"
-            # else
-            #   console.error "glg-atp: unknown survey type: #{selectedProject.type}"
-            #   return
+            postData =
+              SurveyId: id
+              personIds: [@personId]
+              rmPersonId: @currentuser.personId
+            uri = "survey/attachCMToSurvey20.mustache"
+          when 'survey3'
+            console.debug "glg-atp: survey #{id}"
+            postData =
+              surveyId: id
+              personIds: [@personId]
+              rmPersonId: @currentuser.personId
+            uri = "survey/qualtrics/attachCMToSurvey.mustache"
           when 'meetings' # aka, events, visits
             console.debug "glg-atp: meeting #{id}"
             postData =
               MeetingId: id
-              # PersonIds: {PersonId: @councilMembers[id].personId} for id in @cmIds.split ','
+              PersonIds: [{PersonId: @personId}]
               LastUpdatedBy: @currentuser.personId
             uri = "Event/attachCouncilMember.mustache"
           else
