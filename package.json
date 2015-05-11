@@ -11,7 +11,8 @@
     "polymer-serve": "^0.0.30",
     "ui-fonts": "^0.0.1",
     "ui-styles": "^0.0.0",
-    "ui-button": "git://github.com/custom-elements/ui-button"
+    "ui-button": "git://github.com/custom-elements/ui-button",
+    "ui-busy": "git://github.com/custom-elements/ui-busy"
   },
   "license": "ISC",
   "scripts": {

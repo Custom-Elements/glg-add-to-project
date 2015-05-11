@@ -63,6 +63,7 @@ Make the actual call to epi and set up the `qidMap` structure.
 
       postToEpiquery: (templatePath, body) ->
         new Promise (resolve, reject) =>
+          debugger
           qid = Math.random()
           @qidMap[qid] =
             resolve: resolve
@@ -93,23 +94,6 @@ figure out where we're posting the data and what the params should be.
               # TODO: Parameterize?
               source: 'glg-add-to-project'
             templatePath = "consultations/new/attachParticipants2.mustache"
-            # TODO: Differentiate surveys?
-            # if selectedProject.type is 'Surveys 3.0'
-            #   body =
-            #     surveyId: id
-            #     # TODO: Need personId instead of cmId here?
-            #     personIds: @councilMembers[id].personId for id in @cmIds.split ','
-            #     rmPersonId: @currentuser.personId
-            #   templatePath = "survey/qualtrics/attachCMToSurvey.mustache"
-            # else if selectedProject.type is 'Surveys 2.0'
-            #   body =
-            #     SurveyId: id
-            #     personIds: @councilMembers[id].personId for id in @cmIds.split ','
-            #     rmPersonId: @currentuser.personId
-            #   templatePath = "survey/attachCMToSurvey20.mustache"
-            # else
-            #   console.error "glg-atp: unknown survey type: #{selectedProject.type}"
-            #   return
           when 'survey2'
             console.debug "glg-atp: survey #{id}"
             body =
@@ -134,6 +118,7 @@ figure out where we're posting the data and what the params should be.
           else
             console.error "glg-atp: unknown entity type: #{projectType}"
             return
+
         @working = true
         @postToEpiquery templatePath, body
           .then =>
@@ -143,13 +128,16 @@ figure out where we're posting the data and what the params should be.
           .then =>
             @working = false
 
+      onAddClicked: (e, detail, sender) ->
+        @addPerson()
+
 
 ### Polymer Lifecycle
 
       created: ->
 
       ready: ->
-        @working = true
+        @working = false
         @setupEpi()
 
       attached: ->

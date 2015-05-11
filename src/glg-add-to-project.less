@@ -14,8 +14,12 @@
     width: 5em;
   }
 
-  svg {
-    fill: @grey;
+  .busy-container {
     width: 5em;
+    text-align: center;
+
+    ui-busy::shadow svg {
+      fill: @grey;
+    }
   }
 }
