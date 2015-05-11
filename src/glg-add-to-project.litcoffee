@@ -87,9 +87,11 @@ figure out where we're posting the data and what the params should be.
             console.debug "glg-atp: consult #{id}"
             body =
               consultationId: id
-              councilMembers: @cmId
+              councilMembers: [{id: @cmId}]
               userPersonId: @currentuser.personId
-            templatePath = "consultations/new/attachParticipants.mustache"
+              # TODO: Parameterize?
+              source: 'glg-add-to-project'
+            templatePath = "consultations/new/attachParticipants2.mustache"
           when 'surveys'
             console.debug "glg-atp: survey #{id}"
             # TODO: Differentiate surveys?
@@ -119,26 +121,14 @@ figure out where we're posting the data and what the params should be.
           else
             console.error "glg-atp: unknown entity type: #{projectType}"
             return
+        @working = true
         @postToEpiquery templatePath, body
           .then =>
             @cmAttached = true
           , (err) =>
             console.error "Error:#{err}, Path:#{templatePath}, Body:#{body}"
-
-        # @postToEpiquery templatePath, body, 3*60*1000
-        # .then undefined, (err) =>
-        #   @fire 'atp-failed',
-        #     entity: entity
-        #     projectId: selectedProject.id
-        #     cmIds: @cmIds.split ','
-        #     error: err
-        #   Promise.reject()
-        # .then (messages) =>
-        #   @fire 'atp-succeeded',
-        #     entity: entity
-        #     projectId: selectedProject.id
-        #     cmIds: @cmIds.split ','
-        #   track() if entity is 'consults' # currently, we only track adds to consults
+          .then =>
+            @working = false
 
 
 ### Polymer Lifecycle
@@ -146,6 +136,7 @@ figure out where we're posting the data and what the params should be.
       created: ->
 
       ready: ->
+        @working = true
         @setupEpi()
 
       attached: ->
