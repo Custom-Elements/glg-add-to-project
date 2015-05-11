@@ -1,6 +1,7 @@
 @import "../node_modules/ui-styles/colors";
 @import "../node_modules/ui-styles/visual-elements";
 @import "../node_modules/ui-styles/keyframes";
+@import "../node_modules/ui-fonts/node_modules/ui-font-awesome/font-awesome-icons";
 
 :host {
   display: inline-block;
@@ -8,18 +9,28 @@
   border: 1px solid @grey;
   cursor: pointer;
 
-  ui-button {
+  .add, .attached, .dropdown-button {
     background-color: inherit;
-    padding: 0.2em 0;
-    width: 5em;
+    padding: 0.375em;
+  }
+
+  .dropdown-button {
+    font-size: 1.6em;
+    border-left: 1px solid @grey;
+
+    icon {
+      font-size: 0.6em;
+      font-weight: 100;
+      color: @grey;
+    }
   }
 
   .busy-container {
     display: inline-block;
-    width: 5em;
     height: 1.125em;
+    min-width: 2em;
     text-align: center;
-    padding: 0.2em 0;
+    padding: 0.2em;
 
     ui-busy::shadow svg {
       fill: @grey;

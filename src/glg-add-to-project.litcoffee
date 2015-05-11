@@ -127,6 +127,10 @@ figure out where we're posting the data and what the params should be.
           .then =>
             @working = false
 
+### Button Handlers
+
+Bog-standard "add this person" click.
+
       onAddClicked: (e, detail, sender) ->
         @addPerson()
 

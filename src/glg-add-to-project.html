@@ -1,12 +1,17 @@
 <link rel="import" href="../node_modules/ui-button/src/ui-button.html">
 <link rel="import" href="../node_modules/ui-busy/src/ui-busy.html">
+<link rel="import" href="../node_modules/ui-fonts/fonts.html">
 <polymer-element name="glg-add-to-project"
     attributes="target cmId">
   <template>
     <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less">
     <glg-current-user currentuser="{{currentuser}}"></glg-current-user>
-    <ui-button minimal hidden?="{{working || cmAttached}}" on-click="{{onAddClicked}}">Add</ui-button>
-    <ui-button minimal disabled hidden?="{{working || !cmAttached}}">Attached</ui-button>
+    <ui-button class="add" minimal hidden?="{{working || cmAttached}}" on-click="{{onAddClicked}}">Add</ui-button>
+    <ui-button class="attached" minimal disabled hidden?="{{working || !cmAttached}}">Attached</ui-button>
+    <ui-button minimal class="dropdown-button" hidden?="{{working}}">
+      <icon angle-down></icon>
+    </ui-button>
+
     <div class="busy-container" hidden?="{{!working}}">
       <ui-busy></ui-busy>
     </div>
