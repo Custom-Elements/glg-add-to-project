@@ -63,7 +63,6 @@ Make the actual call to epi and set up the `qidMap` structure.
 
       postToEpiquery: (templatePath, body) ->
         new Promise (resolve, reject) =>
-          debugger
           qid = Math.random()
           @qidMap[qid] =
             resolve: resolve
