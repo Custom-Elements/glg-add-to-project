@@ -4,8 +4,8 @@
   <template>
     <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less">
     <glg-current-user currentuser="{{currentuser}}"></glg-current-user>
-    <ui-button minimal hidden?="{{attached}}" on-click="{{addPerson}}">Add</ui-button>
-    <ui-button minimal disabled hidden?="{{!attached}}">Attached</ui-button>
+    <ui-button minimal hidden?="{{cmAttached}}" on-click="{{addPerson}}">Add</ui-button>
+    <ui-button minimal disabled hidden?="{{!cmAttached}}">Attached</ui-button>
   </template>
   <script src="./glg-add-to-project.litcoffee"></script>
 </polymer-element>
