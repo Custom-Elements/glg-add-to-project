@@ -18,6 +18,7 @@ If the person with that `cmId` is already attached to the project then
 show an attached label.
 
       targetChanged: (oldValue, newValue) ->
+        @isConsultation = newValue?.id.startsWith 'consultation'
         @cmAttached = newValue.council_members[@cmId]
 
 ### epiquery
