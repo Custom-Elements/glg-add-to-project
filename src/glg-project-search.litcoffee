@@ -134,3 +134,7 @@ list of existing attached folks.
       domReady: ->
 
       detached: ->
+
+      publish:
+        target:
+          reflect: true

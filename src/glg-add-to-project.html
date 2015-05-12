@@ -6,9 +6,9 @@
   <template>
     <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less">
     <glg-current-user currentuser="{{currentuser}}"></glg-current-user>
-    <ui-button class="add" minimal hidden?="{{working || cmAttached}}" on-click="{{onAddClicked}}">Add</ui-button>
-    <ui-button class="attached" minimal disabled hidden?="{{working || !cmAttached}}">Attached</ui-button>
-    <ui-button minimal class="dropdown-button" hidden?="{{working || !isConsultation || cmAttached}}">
+    <ui-button minimal hidden?="{{working || cmAttached}}" on-click="{{onAddClicked}}">Add</ui-button>
+    <ui-button minimal disabled hidden?="{{working || !cmAttached}}">Attached</ui-button>
+    <ui-button minimal hidden?="{{working || !isConsultation || cmAttached}}">
       <icon angle-down></icon>
     </ui-button>
 
