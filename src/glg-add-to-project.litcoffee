@@ -79,8 +79,10 @@ Make the actual call to epi and set up the `qidMap` structure.
 ### addPerson
 
 Add the person specified by `cmId` to the target, if any. If no target, do nothing.
+And, yuck, the method dispatch in this with those two params just got gross. I should
+fix this eventually.
 
-      addPerson: (withPriority=false)->
+      addPerson: (withPriority=false, toReferralList=false)->
         return if not @target
 
 What type of project are we adding to? What is its `id`? Once we have that,
@@ -90,35 +92,42 @@ figure out where we're posting the data and what the params should be.
         switch projectType
           when 'consultation'
             console.debug "glg-atp: consult #{id}"
-            body =
-              consultationId: id
-              councilMembers: [{id: @cmId}]
-              userPersonId: @currentuser.personId
-              withPriority: withPriority
-              # TODO: Parameterize?
-              source: 'glg-add-to-project'
-            templatePath = "consultations/new/attachParticipants2.mustache"
+            if not toReferralList
+              body =
+                consultationId: id
+                councilMembers: [{id: @cmId}]
+                userPersonId: @currentuser.personId
+                withPriority: withPriority
+                # TODO: Parameterize?
+                source: 'glg-add-to-project'
+              templatePath = 'consultations/new/attachParticipants2.mustache'
+            else
+              body =
+                consultationId: id
+                councilMemberId: @cmId
+                user: @currentuser
+              templatePath = 'consultations/new/addCouncilMemberToReferralList.mustache'
           when 'survey2'
             console.debug "glg-atp: survey #{id}"
             body =
               SurveyId: id
               personIds: [@personId]
               rmPersonId: @currentuser.personId
-            templatePath = "survey/attachCMToSurvey20.mustache"
+            templatePath = 'survey/attachCMToSurvey20.mustache'
           when 'survey3'
             console.debug "glg-atp: survey #{id}"
             body =
               surveyId: id
               personIds: [@personId]
               rmPersonId: @currentuser.personId
-            templatePath = "survey/qualtrics/attachCMToSurvey.mustache"
+            templatePath = 'survey/qualtrics/attachCMToSurvey.mustache'
           when 'meetings' # aka, events, visits
             console.debug "glg-atp: meeting #{id}"
             body =
               MeetingId: id
               PersonIds: [{PersonId: @personId}]
               LastUpdatedBy: @currentuser.personId
-            templatePath = "Event/attachCouncilMember.mustache"
+            templatePath = 'Event/attachCouncilMember.mustache'
           else
             console.error "glg-atp: unknown entity type: #{projectType}"
             return
@@ -139,14 +148,21 @@ Bog-standard "add this person" click.
       onAddClicked: (e, detail, sender) ->
         @addPerson()
 
+Show the dropdown for consultation targets. Grants adding with priority
+and adding to referral list.
+
       onDropdownClicked: (e, detail, sender) ->
         @hideDropdown = !@hideDropdown
 
       onAddWithPriorityClicked: (e, detail, sender) ->
         @hideDropdown = true
+        @addPerson(true)
 
       onAddToReferralListClicked: (e, detail, sender) ->
         @hideDropdown = true
+        @addPerson(false, true)
+
+If the user clicks somewhere else we should hide our dropdown, if showing.
 
       onDocumentClicked: (e, detail, sender) ->
         @hideDropdown = true if e.target isnt @
@@ -157,16 +173,17 @@ Bog-standard "add this person" click.
 
       ready: ->
         @working = false
-        @isConsultation = true
         @hideDropdown = true
         @setupEpi()
 
       attached: ->
         @cmAttached = false
-        # The value of this inside onDocumentClicked with a fat arrow when attached from the
-        # ready method was a bare object, even though the value of this inside the ready method
-        # is correct. *Probably* something to do with how Polymer clones this prototype object
-        # on instantiation but I didn't dig.
+
+The value of "@" inside onDocumentClicked with a fat arrow when attached from the
+ready method was a bare object, even though the value of "@" inside the ready method
+is correct. *Probably* something to do with how Polymer clones this prototype object
+on instantiation but I didn't dig.
+
         @boundDocClick = @onDocumentClicked.bind(@)
         document.addEventListener 'click', @boundDocClick
 
