@@ -8,13 +8,24 @@
     <glg-current-user currentuser="{{currentuser}}"></glg-current-user>
     <ui-button minimal hidden?="{{working || cmAttached}}" on-click="{{onAddClicked}}">Add</ui-button>
     <ui-button minimal disabled hidden?="{{working || !cmAttached}}">Attached</ui-button>
-    <ui-button minimal hidden?="{{working || !isConsultation || cmAttached}}">
+    <ui-button minimal hidden?="{{working || !isConsultation || cmAttached}}" on-click="{{onDropdownClicked}}">
       <icon angle-down></icon>
     </ui-button>
 
     <div class="busy-container" hidden?="{{!working}}">
       <ui-busy></ui-busy>
     </div>
+
+    <section class="dropdown" hidden?="{{hideDropdown}}">
+      <ul>
+        <li on-click="{{onAddWithPriorityClicked}}">
+          Add with Priority
+        </li>
+        <li on-click="{{onAddToReferralListClicked}}">
+          Add to Referral List
+        </li>
+      </ul>
+    </section>
   </template>
   <script src="./glg-add-to-project.litcoffee"></script>
 </polymer-element>

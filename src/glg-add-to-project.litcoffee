@@ -139,6 +139,17 @@ Bog-standard "add this person" click.
       onAddClicked: (e, detail, sender) ->
         @addPerson()
 
+      onDropdownClicked: (e, detail, sender) ->
+        @hideDropdown = !@hideDropdown
+
+      onAddWithPriorityClicked: (e, detail, sender) ->
+        @hideDropdown = true
+
+      onAddToReferralListClicked: (e, detail, sender) ->
+        @hideDropdown = true
+
+      onDocumentClicked: (e, detail, sender) ->
+        @hideDropdown = true if e.target isnt @
 
 ### Polymer Lifecycle
 
@@ -146,11 +157,20 @@ Bog-standard "add this person" click.
 
       ready: ->
         @working = false
+        @isConsultation = true
+        @hideDropdown = true
         @setupEpi()
 
       attached: ->
         @cmAttached = false
+        # The value of this inside onDocumentClicked with a fat arrow when attached from the
+        # ready method was a bare object, even though the value of this inside the ready method
+        # is correct. *Probably* something to do with how Polymer clones this prototype object
+        # on instantiation but I didn't dig.
+        @boundDocClick = @onDocumentClicked.bind(@)
+        document.addEventListener 'click', @boundDocClick
 
       domReady: ->
 
       detached: ->
+        document.removeEventListener 'click', @boundDocClick
