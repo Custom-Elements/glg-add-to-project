@@ -1,0 +1,18 @@
+{
+  "name": "core-selection",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^1.1.0"
+  },
+  "homepage": "https://github.com/Custom-Elements/core-selection",
+  "_release": "2800dcbd14",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "2800dcbd144605cdf938cdfc71f9ae55e4ac2fdd"
+  },
+  "_source": "git://github.com/Custom-Elements/core-selection.git",
+  "_target": "master",
+  "_originalSource": "Custom-Elements/core-selection"
+}
