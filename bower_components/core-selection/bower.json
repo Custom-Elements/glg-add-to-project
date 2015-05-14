@@ -1,0 +1,10 @@
+{
+  "name": "core-selection",
+  "version": "0.5.2",
+  "private": true,
+  "dependencies": {
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^1.1.0"
+  }
+}

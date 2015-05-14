@@ -1,0 +1,21 @@
+{
+  "name": "core-selector",
+  "version": "0.5.5",
+  "private": true,
+  "dependencies": {
+    "core-selection": "Custom-Elements/core-selection#master"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^1.4.2"
+  },
+  "homepage": "https://github.com/Custom-Elements/core-selector",
+  "_release": "0.5.5",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.5.5",
+    "commit": "d6ef81684ee223d9be382ea1953414b08e3e30d2"
+  },
+  "_source": "git://github.com/Custom-Elements/core-selector.git",
+  "_target": "~0.5.5",
+  "_originalSource": "Custom-Elements/core-selector"
+}

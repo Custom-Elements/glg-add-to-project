@@ -1,0 +1,11 @@
+{
+  "name": "core-selector",
+  "version": "0.5.5",
+  "private": true,
+  "dependencies": {
+    "core-selection": "Custom-Elements/core-selection#master"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^1.4.2"
+  }
+}
