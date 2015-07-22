@@ -1,30 +1,29 @@
-<link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-nectar/src/glg-nectar.html">
+<link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-name-match/src/glg-name-match.html">
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-typeahead/src/ui-typeahead.html">
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-current-user/src/glg-current-user.html">
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-fonts/fonts.html">
 <link rel="import" href="../bower_components/core-selector/core-selector.html">
 <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less" shim-shadowdom>
 <polymer-element name="glg-add-to-project"
-  attributes="cmIds appName hideUI hideOwnerFilter hideProjType hideExperts rmPersonId projType projOwner trackUrl epiStreamUrl nectarUrl"
+  attributes="cmIds appName hideUI hideOwnerFilter hideProjType hideExperts rmPersonId projType projOwner trackUrl epiStreamUrl cercaUrl"
   on-inputchange="{{queryUpdated}}"
   on-user="{{getMyProjects}}"
-  on-results="{{displayNectarResults}}"
+  on-name-match-results="{{displayCercaResults}}"
   on-itemselected="{{selectProject}}"
   >
   <template>
     <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less" shim-shadowdom>
     <glg-current-user id="atpuser" username="{{username}}"></glg-current-user>
-    <glg-nectar
-      id="nectar"
-      urls="{{nectarUrl}}"
-      appName={{appName}}
-      interleave="true"
-      scoreThreshold="0.5"
-      howMany="10"
+    <glg-name-match
+      id="namematch"
+      url="{{cercaUrl}}"
+      minScore="0.5"
+      size="10"
       secondarySortField="createDate"
       secondarySortOrder="desc"
       >
-    </glg-nectar>
+    </glg-name-match>
+
     <icon spinner id="hbfetching" class="progress"></icon>
     <div id="inputwrapper" hidden=true>
       <div id="atppromptwithoutexperts" hidden=true>Attach to</div>
@@ -39,9 +38,9 @@
         <span id="filterPipe">|</span>
         <span id="projtype">
           <core-selector id="selectProjType" multi="false" class="options" selected="0" on-core-select="{{projTypeUpdated}}">
-            <span id="consults">consults</span>
-            <span id="surveys">surveys</span>
-            <span id="meetings">meetings</span>
+            <span hbEntity="consults" cercaIndices="consultations">consults</span>
+            <span hbEntity="surveys" cercaIndices="surveys,qualtrics_surveys">surveys</span>
+            <span hbEntity="meetings" cercaIndices="events,meeting_groups,visits">meetings</span>
           <core-selector>
         </span>
       </div>
@@ -49,16 +48,16 @@
           id="projects"
           sticky
           placeholder="Search {{projOwner}} {{projType}}..."
-          debounce="50">
+          debounce="200">
         <template id="projectMatches" repeat="{{matches}}">
           <ui-typeahead-item>
             <div class="proj-name">
               <span class="ico-add"><icon plus></icon></span>
-              <span>{{name}}</span>
+              <span>{{name || _source.name}}</span>
               <div class="proj-meta">
                 <!-- <span>{{createDate | date}} </span> -->
-                <span>{{createDate}} </span>
-                <span class="proj-meta-important"> {{firm || client || type}}</span>
+                <span>{{createDate || _source.createDate | normDate | date("yyyy-MM-dd")}} </span>
+                <span class="proj-meta-important"> {{firm || client || type || _source.clientName || _source.projectType}}</span>
               </div>
             </div>
           </ui-typeahead-item>

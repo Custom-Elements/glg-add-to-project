@@ -1,7 +1,7 @@
 # glg-add-to-project
 
 Polymer component for adding one or more CMs to a single consult, survey, meeting, or event as selected by the user
-via nectar/hummingbird typeahead. It relies on glue code to supply the council member ID(s) via this element's published attribute.
+via cerca/hummingbird typeahead. It relies on glue code to supply the council member ID(s) via this element's published attribute.
 
 The current use case is the *Add To Consultation* button on the new [Advisor
 Details](https://services.glgresearch.com/advisors/#/cm/3938) page.
@@ -91,9 +91,9 @@ websocket protocol.  E.g.,
 `epiStreamUrl="wss://epistream.mydomain.com/sockjs/websocket"`
 **(required)**
 
-#### nectarUrl
-URL to the nectar web socket endpoint.  Expected to include the
-websocket protocol.  E.g., `nectarUrl="ws://nectar.glgroup.com/ws"`
+#### cercaUrl
+URL to the cerca web service endpoint.  Expected to include the
+websocket protocol.  E.g., `cercaUrl="https://services.glgresearch.com/cerca"`
 **(required)**
 
 ## Events

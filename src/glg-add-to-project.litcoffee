@@ -10,6 +10,18 @@ survey, or various types of in-person meetings.
       howMany: 10
     epiquery2 = require 'epiquery2'
 
+
+## Custom Filters
+#### normDate
+For ensuring that dates are integers in milliseconds.  E.g., 1436797093 instead of 1436797093000
+
+    PolymerExpressions.prototype.normDate = (intDate) ->
+      if typeof intDate is 'number' and intDate.toString().length is 10
+        intDate * 1000
+      else
+        intDate
+
+
     Polymer 'glg-add-to-project',
 
 ## Attributes
@@ -49,9 +61,8 @@ websocket protocol.  E.g.,
 `epiStreamUrl="wss://epistream.mydomain.com/sockjs/websocket"`
 **(required)**
 
-#### nectarUrl
-URL to the nectar web socket endpoint.  Expected to include the
-websocket protocol.  E.g., `nectarUrl="ws://nectar.glgroup.com/ws"`
+#### cercaUrl
+URL to the cerca web service endpoint, excluding the protocol.  E.g., `cercaUrl="services.glgresearch.com/cerca"`
 **(required)**
 
 ## Globals
@@ -120,10 +131,6 @@ Epiquery2 client for fetching remote data over websockets
           @$.atppromptwithexperts.removeAttribute 'hidden'
           @$.atppromptwithoutexperts.setAttribute 'hidden', true
 
-      #TODO: IFF the use case presents itself, don't speculate extra work
-      #      create change handlers for projType and projOwner
-      #      check for existence of @query then executes search()
-
 ## Events
 #### atp-ready
 fired as soon as hummingbird indexes are built and available for searching
@@ -153,24 +160,18 @@ Executes a new search when a different owner of project is selected
       # Use .textContent and avoid putting markup in the filter labels.  May also provide performance advantage
       projOwnerUpdated: (evt, detail, sender) ->
         # don't search until we're ready
-        if detail.isSelected and @$.nectar? and @hb?
+        if detail.isSelected and @$.namematch? and @hb?
           @projOwner = detail.item.textContent
-          #TODO: IFF the use case presents itself, don't speculate extra work
-          #      Don't search here, let attribute change handlers do that?
           @search()
 
 #### projTypeUpdated
 Executes a new search when a different project type is selected
 
-      # While .innerText strips markup, it is style dependent.  It ignores hidden text.
-      # Use .textContent and avoid putting markup in the filter labels.  May also provide performance advantage
       projTypeUpdated: (evt, detail, sender) ->
         # don't search until we're ready
-        if detail.isSelected and @$.nectar? and @hb?
-          @projType = detail.item.textContent
-          @$.nectar.entities = @projType
-          #TODO: IFF the use case presents itself, don't speculate extra work
-          #      Don't search here, let attribute change handlers do that?
+        if detail.isSelected and @$.namematch? and @hb?
+          @projType = detail.item.getAttribute 'cercaIndices'
+          @$.namematch.indices = @projType
           @search()
 
 #### queryUpdated
@@ -226,9 +227,9 @@ Builds a hummingbird index with the list of projects returned by call to epiquer
         post =
           lastUpdate: lastUpdate
           personId: @rmPersonId ? currentuser?.detail?.personId
-        myConsultsUri = "nectar/glgliveMalory/getConsultsDelta.mustache"
-        mySurveysUri = "nectar/glgliveMalory/getSurveyDelta.mustache"
-        myMeetingsUri = "nectar/glgliveMalory/getEventsGroupsVisitsDelta.mustache"
+        myConsultsUri = "hummingbird/getConsultsDelta.mustache"
+        mySurveysUri = "hummingbird/getSurveyDelta.mustache"
+        myMeetingsUri = "hummingbird/getEventsGroupsVisitsDelta.mustache"
         promisesArray.push @postToEpiquery(myConsultsUri, post, timeout, buildHbIndex 'consults')
         promisesArray.push @postToEpiquery(mySurveysUri, post, timeout, buildHbIndex 'surveys')
         promisesArray.push @postToEpiquery(myMeetingsUri, post, timeout, buildHbIndex 'meetings')
@@ -249,39 +250,41 @@ Builds a hummingbird index with the list of projects returned by call to epiquer
           @fire 'atp-ready'
 
 #### displayResults
-Used by displayNectarResults and directly as a callback passed to hummingbird index queries.
+Used by displayCercaResults and directly as a callback passed to hummingbird index queries.
 
       displayResults: (target) ->
         (results) ->
           target.$.projectMatches.model = {matches: results}
 
-#### displayNectarResults
-Used to display nectar results and assumes that the results are interleaved, not grouped by entity.
+#### displayCercaResults
+Used to display cerca results and assumes that the results are interleaved, not grouped by entity.
 
-      displayNectarResults: (evt, detail, sender) ->
-        @displayResults(evt.target) detail.results.matches
+      displayCercaResults: (evt, detail, sender) ->
+        @displayResults(evt.target) detail.hits
 
 #### search
-Primary function for retrieving typeahead results from either hummingbird or nectar
+Primary function for retrieving typeahead results from either hummingbird or cerca
 
       search: () ->
         if @query? and @$.selectProjOwner?.selectedItem? and @$.selectProjType?.selectedItem?
           if @$.selectProjOwner.selectedItem.id is 'mine'
             if isNaN(@query)
-              @hb[@$.nectar.entities].search @query, @displayResults(@), hbOptions
+              @hb[@$.selectProjType.selectedItem.getAttribute 'hbEntity'].search @query, @displayResults(@), hbOptions
             else
-              @hb[@$.nectar.entities].jump @query, @displayResults(@), hbOptions
+              @hb[@$.selectProjType.selectedItem.getAttribute 'hbEntity'].jump @query, @displayResults(@), hbOptions
           else
             if isNaN(@query)
-              @$.nectar.query @query
+              @$.namematch.query @query
             else
-              @$.nectar.jump @query
+              @$.namematch.jump @query
 
 #### selectProject
 Does the attaching of council member(s) to the selected project
 
       selectProject: () ->
         selectedProject = @$.projects.value
+        # TODO: change selectProjType.selecteditem.textContent to selectedProject._type or some such
+        debugger
         entity = @$.selectProjType.selectedItem.textContent # avoid .innerText
         @fire 'atp-started',
           entity: entity
@@ -365,7 +368,8 @@ Does the attaching of council member(s) to the selected project
         @councilMembersStr = "none chosen"
         console.error "glg-atp: epiStreamUrl is not properly defined" unless @epiStreamUrl? and @epiStreamUrl.length > 1
         console.error "glg-atp: trackUrl is not properly defined" unless @trackUrl? and @trackUrl.length > 1
-        console.error "glg-atp: nectarUrl is not properly defined" unless @nectarUrl? and @nectarUrl.length > 1
+        console.error "glg-atp: cercaUrl is not properly defined" unless @cercaUrl? and @cercaUrl.length > 1
+        console.debug "glg-atp: cercaUrl is #{@cercaUrl}" if @cercaUrl? and @cercaUrl.length > 1
         @epi = new epiquery2.EpiClient @epiStreamUrl
 
       attached: ->
