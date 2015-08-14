@@ -1,19 +1,55 @@
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-name-match/src/glg-name-match.html">
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-typeahead/src/ui-typeahead.html">
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-current-user/src/glg-current-user.html">
+<link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/glg-hummingbird/src/glg-hummingbird.html">
 <link rel="import" href="https://services.glgresearch.com/ui-toolkit/node_modules/ui-fonts/fonts.html">
 <link rel="import" href="../bower_components/core-selector/core-selector.html">
 <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less" shim-shadowdom>
 <polymer-element name="glg-add-to-project"
   attributes="cmIds appName hideUI hideOwnerFilter hideProjType hideExperts rmPersonId projType projOwner trackUrl epiStreamUrl cercaUrl"
   on-inputchange="{{queryUpdated}}"
-  on-user="{{getMyProjects}}"
+  on-user="{{updateMyProjects}}"
   on-name-match-results="{{displayCercaResults}}"
+  on-hb-results="{{displayHbResults}}"
   on-itemselected="{{selectProject}}"
+  on-hb-loaded="{{hbLoaded}}"
   >
   <template>
     <link rel="stylesheet" type="text/css" href="./glg-add-to-project.less" shim-shadowdom>
     <glg-current-user id="atpuser" username="{{username}}"></glg-current-user>
+    <glg-hummingbird
+      id="myConsults"
+      indexName="myConsultsIndex"
+      scoreThreshold="0.5"
+      secondarySortField="createDate"
+      secondarySortOrder="desc"
+      howMany="10"
+      startPos="0"
+      variants={}
+    >
+    </glg-hummingbird>
+    <glg-hummingbird
+      id="mySurveys"
+      indexName="mySurveysIndex"
+      scoreThreshold="0.5"
+      secondarySortField="createDate"
+      secondarySortOrder="desc"
+      howMany="10"
+      startPos="0"
+      variants={}
+    >
+    </glg-hummingbird>
+    <glg-hummingbird
+      id="myMeetings"
+      indexName="myMeetingsIndex"
+      scoreThreshold="0.5"
+      secondarySortField="createDate"
+      secondarySortOrder="desc"
+      howMany="10"
+      startPos="0"
+      variants={}
+    >
+    </glg-hummingbird>
     <glg-name-match
       id="namematch"
       url="{{cercaUrl}}"
@@ -38,9 +74,9 @@
         <span id="filterPipe">|</span>
         <span id="projtype">
           <core-selector id="selectProjType" multi="false" class="options" selected="0" on-core-select="{{projTypeUpdated}}">
-            <span hbEntity="consults" cercaIndices="consultations">consults</span>
-            <span hbEntity="surveys" cercaIndices="surveys,qualtrics_surveys">surveys</span>
-            <span hbEntity="meetings" cercaIndices="events,meeting_groups,visits">meetings</span>
+            <span hbEntity="myConsultsIndex" cercaIndices="consultations">consults</span>
+            <span hbEntity="mySurveysIndex" cercaIndices="surveys,qualtrics_surveys">surveys</span>
+            <span hbEntity="myMeetingsIndex" cercaIndices="events,meeting_groups,visits">meetings</span>
           <core-selector>
         </span>
       </div>

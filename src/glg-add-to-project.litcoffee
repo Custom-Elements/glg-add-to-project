@@ -2,12 +2,6 @@
 A dialog to allow one or more CMs to be added to a consult,
 survey, or various types of in-person meetings.
 
-    hummingbird = require 'hummingbird'
-    hbOptions =
-      scoreThreshold: 0.5
-      secondarySortField: 'createDate'
-      secondarySortOrder: 'desc'
-      howMany: 10
     epiquery2 = require 'epiquery2'
 
 
@@ -68,11 +62,6 @@ URL to the cerca web service endpoint, excluding the protocol.  E.g., `cercaUrl=
 ## Globals
 #### hb
 Collection of hummingbird indexes, one per type of project entity
-
-      hb:
-        consults: new hummingbird
-        meetings: new hummingbird
-        surveys: new hummingbird
 
 #### epi
 Epiquery2 client for fetching remote data over websockets
@@ -201,46 +190,58 @@ Posts a payload to epiquery, then either executes the supplied callback on the r
               else
                 msgArray.push msg.columns
           @epi.on 'error', (msg) =>
-            reject new Error "postToEpiquery failed: #{msg.error}"
+            reject new Error "method=\"postToEpiquery\", status=\"failed\", desc=\"#{msg.error}\", uri=\"#{uri}\", post=\"#{JSON.stringify post}\""
           @epi.query 'glglive_o', uri, post, qid
 
-#### getMyProjects
-Fetch of names of projects created in the last 90 days
-where this user was either primary or delegate RM or recruiter
+#### updateMyProjects
+Fetch the names of projects created since these persisted indexes were last created
+or if no index was persisted then all projects created in the last 90 days where this
+user was either primary or delegate RM or recruiter
 
-      getMyProjects: (currentuser) ->
+      updateMyProjects: (currentuser) ->
         @rmPersonId = @rmPersonId ? currentuser?.detail?.personId
+        hb = @hb
 
-##### buildHbIndex
-Builds a hummingbird index with the list of projects returned by call to epiquery
-
-        buildHbIndex = (entity) =>
+        # Adds a document to a hummingbird index
+        buildHbIndex = (id) =>
           (data) =>
             # build hb index from data
-            @hb[entity].add data
+            hb[id].upsert data
 
         # lastUpdate must be seconds since epoch for sql server
-        # chosen to round off lastUpdate to the nearest day-ish
-        lastUpdate = Math.floor((new Date(new Date() - 1000*60*60*24*90)).getTime()/(24*60*60*1000))*24*60*60
+        # for new indexes, round off lastUpdate to the nearest full day
+        fullUpdateDate = Math.floor((new Date(new Date() - 1000*60*60*24*90)).getTime()/(24*60*60*1000))*24*60*60
+        lastConsultsUpdate = if @hb.myConsultsIndex.getLastUpdateTime()? then Math.floor(new Date(@hb.myConsultsIndex.getLastUpdateTime()).getTime()/1000) else null
+        lastSurveysUpdate = if @hb.mySurveysIndex.getLastUpdateTime()? then Math.floor(new Date(@hb.mySurveysIndex.getLastUpdateTime()).getTime()/1000) else null
+        lastMeetingsUpdate = if @hb.myMeetingsIndex.getLastUpdateTime()? then Math.floor(new Date(@hb.myMeetingsIndex.getLastUpdateTime()).getTime()/1000) else null
+        # keep reference to array of hummingbird custom elements for closure in promise.then below
+        hb = @.hb
         promisesArray = []
         timeout = 3*60*1000 # 3 min timeout
-        post =
-          lastUpdate: lastUpdate
-          personId: @rmPersonId ? currentuser?.detail?.personId
+        personId = @rmPersonId ? currentuser?.detail?.personId
+        # for previously persisted indexes, fetch delta since lastUpdate (only transform milliseconds -> seconds)
+        postConsults =
+          lastUpdate: lastConsultsUpdate ? fullUpdateDate
+          personId: personId
+        postSurveys =
+          lastUpdate: lastSurveysUpdate ? fullUpdateDate
+          personId: personId
+        postMeetings =
+          lastUpdate: lastMeetingsUpdate ? fullUpdateDate
+          personId: personId
         myConsultsUri = "hummingbird/getConsultsDelta.mustache"
         mySurveysUri = "hummingbird/getSurveyDelta.mustache"
         myMeetingsUri = "hummingbird/getEventsGroupsVisitsDelta.mustache"
-        promisesArray.push @postToEpiquery(myConsultsUri, post, timeout, buildHbIndex 'consults')
-        promisesArray.push @postToEpiquery(mySurveysUri, post, timeout, buildHbIndex 'surveys')
-        promisesArray.push @postToEpiquery(myMeetingsUri, post, timeout, buildHbIndex 'meetings')
+        promisesArray.push @postToEpiquery(myConsultsUri, postConsults, timeout, buildHbIndex 'myConsultsIndex')
+        promisesArray.push @postToEpiquery(mySurveysUri, postSurveys, timeout, buildHbIndex 'mySurveysIndex')
+        promisesArray.push @postToEpiquery(myMeetingsUri, postMeetings, timeout, buildHbIndex 'myMeetingsIndex')
         console.debug "glg-atp: Promise.all fired"
         Promise.all promisesArray
-        .then undefined, (err) =>
-          console.warn "glg-atp: Failed to build hb indexes: #{err}"
-          Promise.reject()
         .then () =>
-          for entity in Object.keys @hb
-            console.debug "glg-atp: hummingbird #{entity}: #{Object.keys(@hb[entity].metaStore.root).length} items"
+          # persist each completed hb index
+          for own entity, idx of hb
+            idx.persist()
+            console.debug "glg-atp: hummingbird #{entity}: #{idx.numItems()} items"
           @$.hbfetching.setAttribute 'hidden', true
           unless @hideUI is 'true' or @hideUI is true
             @$.atppromptwithexperts.removeAttribute 'hidden' unless @hideExperts is 'true' or @hideExperts is true
@@ -248,19 +249,33 @@ Builds a hummingbird index with the list of projects returned by call to epiquer
             @$.inputwrapper.removeAttribute 'hidden' unless @hideUI
             @$.inputwrapper.focus() unless @hideUI
           @fire 'atp-ready'
+        , (err) =>
+          console.warn "glg-atp: Failed to build hb indexes: #{err}"
+        .then undefined, (err) =>
+          console.warn "glg-atp: Failed to persist hb indexes: #{err}"
 
-#### displayResults
+#### hbLoaded
+Keeps track of which hummingbird indexes are loaded from local storage.
+If all indexes have loaded, it hides the spinner and displays the typeahead UI.
+
+      hbLoaded: (evt, detail, sender) ->
+        @hb[detail].hbReady = true
+        atpReady = true
+        ((unless @hb[name].hbReady then atpReady = false) for name in Object.keys(@hb))
+        console.debug "glg-atp: checking #{name}"
+        @$.hbfetching.setAttribute 'hidden', true if atpReady
+
+#### displayHbResults
 Used by displayCercaResults and directly as a callback passed to hummingbird index queries.
 
-      displayResults: (target) ->
-        (results) ->
-          target.$.projectMatches.model = {matches: results}
+      displayHbResults: (evt, detail, sender) ->
+        @$.projectMatches.model = {matches: detail}
 
 #### displayCercaResults
 Used to display cerca results and assumes that the results are interleaved, not grouped by entity.
 
       displayCercaResults: (evt, detail, sender) ->
-        @displayResults(evt.target) detail.hits
+        @$.projectMatches.model = {matches: detail.hits}
 
 #### search
 Primary function for retrieving typeahead results from either hummingbird or cerca
@@ -269,9 +284,9 @@ Primary function for retrieving typeahead results from either hummingbird or cer
         if @query? and @$.selectProjOwner?.selectedItem? and @$.selectProjType?.selectedItem?
           if @$.selectProjOwner.selectedItem.id is 'mine'
             if isNaN(@query)
-              @hb[@$.selectProjType.selectedItem.getAttribute 'hbEntity'].search @query, @displayResults(@), hbOptions
+              @hb[@$.selectProjType.selectedItem.getAttribute 'hbEntity'].search @query
             else
-              @hb[@$.selectProjType.selectedItem.getAttribute 'hbEntity'].jump @query, @displayResults(@), hbOptions
+              @hb[@$.selectProjType.selectedItem.getAttribute 'hbEntity'].jump @query
           else
             if isNaN(@query)
               @$.namematch.query @query
@@ -283,13 +298,13 @@ Does the attaching of council member(s) to the selected project
 
       selectProject: () ->
         selectedProject = @$.projects.value
-        # TODO: change selectProjType.selecteditem.textContent to selectedProject._type or some such
-        debugger
-        entity = @$.selectProjType.selectedItem.textContent # avoid .innerText
-        @fire 'atp-started',
+        entity = @$.selectProjType.selectedItem.getAttribute 'hbEntity'
+        msg =
           entity: entity
           projectId: selectedProject.id
           cmIds: @cmIds.split ','
+        console.debug "glg-atp: atp-started #{JSON.stringify msg}"
+        @fire 'atp-started', msg
 
         track = (app=@appName, projId=selectedProject.id, cmIds=@cmIds, rmId=@rmPersonId, action='add') =>
           # tracking is intended to be fire-and-forget
@@ -303,14 +318,14 @@ Does the attaching of council member(s) to the selected project
 
         uri = ""
         switch entity
-          when 'consults'
+          when 'myConsultsIndex'
             console.debug "glg-atp: consult selected #{selectedProject.name} (#{selectedProject.id})"
             postData =
               consultationId: selectedProject.id
               councilMembers: {id: id} for id in @cmIds.split ','
               userPersonId: @rmPersonId
             uri = "consultations/new/attachParticipants.mustache"
-          when 'surveys'
+          when 'mySurveysIndex'
             console.debug "glg-atp: survey selected name: #{selectedProject.name}, id: #{selectedProject.id}, type: #{selectedProject.type}"
             if selectedProject.type is 'Surveys 3.0'
               postData =
@@ -327,7 +342,7 @@ Does the attaching of council member(s) to the selected project
             else
               console.error "glg-atp: unknown survey type: #{selectedProject.type}"
               return
-          when 'meetings' # aka, events, visits
+          when 'myMeetingsIndex' # aka, events, visits
             console.debug "glg-atp: meeting selected #{selectedProject.name} (#{selectedProject.id})"
             postData =
               MeetingId: selectedProject.id
@@ -361,8 +376,12 @@ Does the attaching of council member(s) to the selected project
         @hideExperts = false
 
       ready: ->
+        @hb = {}
         @$.inputwrapper.setAttribute 'unresolved', ''
         @$.hbfetching.setAttribute 'hidden', 'true' if @hideUI is 'true' or @hideUI is true
+        @hb['myConsultsIndex'] = @$.myConsults
+        @hb['mySurveysIndex'] = @$.mySurveys
+        @hb['myMeetingsIndex'] = @$.myMeetings
         @councilMemberNames = []
         @councilMembers = {} # key=cmId
         @councilMembersStr = "none chosen"
