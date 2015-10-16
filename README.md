@@ -1,4 +1,4 @@
-# glg-add-to-project
+# Overview
 
 Polymer component for adding one or more CMs to a single consult, survey, meeting, or event as selected by the user
 via cerca/hummingbird typeahead. It relies on glue code to supply the council member ID(s) via this element's published attribute.
