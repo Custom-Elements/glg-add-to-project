@@ -30,7 +30,7 @@ Details](https://services.glgresearch.com/advisors/#/cm/3938) page.
 Begin by executing `npm test` from the root of the repo
 
 Then,
-* open Chrome to `http://localhost:1000/demo.html`
+* open Chrome to `http://localhost:10000/demo.html`
 
 Alternatively,
 * edit your `/etc/hosts` to add an entry like `127.0.0.1 consultations.glgroup.com`
@@ -108,4 +108,3 @@ fired after an expert was successfully added to a project
 
 #### atp-failed
 fired after failing to add an expert to a project
-

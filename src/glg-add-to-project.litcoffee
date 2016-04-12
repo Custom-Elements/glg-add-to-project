@@ -298,6 +298,15 @@ Does the attaching of council member(s) to the selected project
 
       selectProject: () ->
         selectedProject = @$.projects.value
+
+        ###
+          If the result is coming back from cerca we need to normalize the
+          objects and provide and 'id' property
+        ###
+        if selectedProject._source
+          selectedProject = selectedProject._source
+          selectedProject.id = selectedProject._id
+
         entity = @$.selectProjType.selectedItem.getAttribute 'hbEntity'
         msg =
           entity: entity
