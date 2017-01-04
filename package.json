@@ -1,8 +1,8 @@
 {
   "name": "glg-add-to-project",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "dependencies": {
-    "epiquery2": "0.0.5",
+    "epiquery": "igroff/epiquery2.git",
     "polymer-serve": "^0.0.34"
   },
   "license": "ISC",
@@ -11,7 +11,7 @@
     "test": "polymer-serve ./"
   },
   "engines": {
-    "npm": "2.5.1",
-    "node": "0.12.1"
+    "npm": "6.9.2",
+    "node": "3.10.3"
   }
 }
