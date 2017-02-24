@@ -11,7 +11,7 @@
     "test": "polymer-serve ./"
   },
   "engines": {
-    "npm": "6.9.2",
-    "node": "3.10.3"
+    "node": "6.9.2",
+    "npm": "3.10.3"
   }
 }
