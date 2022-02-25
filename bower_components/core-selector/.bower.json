@@ -15,7 +15,7 @@
     "tag": "0.5.5",
     "commit": "d6ef81684ee223d9be382ea1953414b08e3e30d2"
   },
-  "_source": "git://github.com/Custom-Elements/core-selector.git",
+  "_source": "git+https://github.com/Custom-Elements/core-selector.git",
   "_target": "~0.5.5",
   "_originalSource": "Custom-Elements/core-selector"
 }

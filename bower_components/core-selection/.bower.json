@@ -12,7 +12,7 @@
     "branch": "master",
     "commit": "2800dcbd144605cdf938cdfc71f9ae55e4ac2fdd"
   },
-  "_source": "git://github.com/Custom-Elements/core-selection.git",
+  "_source": "git+https://github.com/Custom-Elements/core-selection.git",
   "_target": "master",
   "_originalSource": "Custom-Elements/core-selection"
 }

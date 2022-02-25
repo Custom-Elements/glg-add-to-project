@@ -27,7 +27,7 @@
     "tag": "0.2.1",
     "commit": "bd079095f9f28fbb46bfc1343fb786e7c95c8bec"
   },
-  "_source": "git://github.com/Custom-Elements/polymer-filters.git",
+  "_source": "git+https://github.com/Custom-Elements/polymer-filters.git",
   "_target": "~0.2.1",
   "_originalSource": "Custom-Elements/polymer-filters"
 }
