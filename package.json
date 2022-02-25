@@ -2,7 +2,7 @@
   "name": "glg-add-to-project",
   "version": "1.2.1",
   "dependencies": {
-    "epiquery": "igroff/epiquery2.git",
+    "epiquery": "git+https://github.com/igroff/epiquery2.git",
     "polymer-serve": "^0.0.34"
   },
   "license": "ISC",
